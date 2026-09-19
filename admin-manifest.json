@@ -1,0 +1,18 @@
+{
+  "name": "Kılıç Koltuk Yönetim Paneli",
+  "short_name": "Kılıç Panel",
+  "description": "Kılıç Koltuk Mobilya Yönetim ve Ürün Düzenleme Paneli",
+  "start_url": "admin.html",
+  "display": "standalone",
+  "background_color": "#0a0b0d",
+  "theme_color": "#D4AF37",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

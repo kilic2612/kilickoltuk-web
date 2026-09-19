@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Placeholder Oluşturucu</title>
+</head>
+
+<body>
+    <h1>Placeholder Görseller Oluşturuluyor...</h1>
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <div id="status" style="margin-top: 20px; font-family: Arial; padding: 20px; background: #f0f0f0;"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const status = document.getElementById('status');
+
+        const placeholders = [
+            { name: 'placeholder.jpg', width: 800, height: 600, text: 'Ürün Görseli' },
+            { name: 'katalog-koltuk-1.jpg', width: 1200, height: 1600, text: 'Koltuk Kumaş Kataloğu 1' },
+            { name: 'katalog-koltuk-2.jpg', width: 1200, height: 1600, text: 'Koltuk Kumaş Kataloğu 2' },
+            { name: 'katalog-yatak-baslik-1.jpg', width: 1200, height: 1600, text: 'Yatak Başlık Kataloğu' },
+            { name: 'tv-unitesi.jpg', width: 800, height: 600, text: 'TV Ünitesi' },
+            { name: 'kose-takimi.jpg', width: 800, height: 600, text: 'Köşe Takımı' },
+            { name: 'dolap.jpg', width: 800, height: 600, text: 'Dolap' },
+            { name: 'cift-kisilik-yatak.jpg', width: 800, height: 600, text: 'Çift Kişilik Yatak' },
+            { name: 'tek-kisilik-yatak.jpg', width: 800, height: 600, text: 'Tek Kişilik Yatak' },
+            { name: 'yemek-masasi-2.jpg', width: 800, height: 600, text: 'Modern Yemek Takımı' },
+            { name: 'hakkimizda.jpg', width: 800, height: 600, text: 'Hakkımızda' },
+            { name: 'hero-bg-1.jpg', width: 1920, height: 800, text: 'KILIÇ KOLTUK MOBİLYA' },
+            { name: 'hero-bg-2.jpg', width: 1920, height: 800, text: 'YENİ SEZON KOLEKSİYONU' },
+            { name: 'hero-bg-3.jpg', width: 1920, height: 800, text: 'ÖZEL İNDİRİM' }
+        ];
+
+        let html = '<h2>📥 Oluşturulan Görseller:</h2><ul>';
+
+        placeholders.forEach(({ name, width, height, text }) => {
+            canvas.width = width;
+            canvas.height = height;
+
+            // Gradient arka plan
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, '#D4AF37');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Metin
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold ' + Math.floor(height / 15) + 'px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, width / 2, height / 2);
+
+            // Boyut bilgisi
+            ctx.font = Math.floor(height / 25) + 'px Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.fillText(width + ' x ' + height, width / 2, height / 2 + height / 8);
+
+            // İndir
+            const link = document.createElement('a');
+            link.download = name;
+            link.href = canvas.toDataURL('image/jpeg', 0.9);
+            link.click();
+
+            html += `<li>✅ ${name} (${width}x${height})</li>`;
+        });
+
+        html += '</ul>';
+        html += '<p style="color: green; font-weight: bold; margin-top: 20px;">✅ Tüm görseller İndirilenler klasörüne kaydedildi!</p>';
+        html += '<p><strong>Şimdi ne yapmalısınız:</strong></p>';
+        html += '<ol>';
+        html += '<li>İndirilenler klasörünü açın</li>';
+        html += '<li>Tüm görselleri seçin (Ctrl+A)</li>';
+        html += '<li>Kopyalayın (Ctrl+C)</li>';
+        html += '<li>C:\\Users\\kilic\\OneDrive\\Desktop\\web sitesi\\ klasörüne yapıştırın (Ctrl+V)</li>';
+        html += '</ol>';
+
+        status.innerHTML = html;
+    </script>
+</body>
+
+</html>

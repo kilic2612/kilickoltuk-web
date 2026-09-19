@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /api.php
+Disallow: /uploads/
+Disallow: /create-placeholder.html
+Disallow: /demo-gorseller.html
+
+# Sitemap
+Sitemap: https://kilickoltukmobilya.com/sitemap.xml
+
+# Crawl-delay (isteğe bağlı)
+Crawl-delay: 5

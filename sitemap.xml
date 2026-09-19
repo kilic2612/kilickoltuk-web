@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+    
+    <!-- Ana Sayfa -->
+    <url>
+        <loc>https://kilickoltukmobilya.com/</loc>
+        <lastmod>2026-09-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/logo.png</image:loc>
+            <image:title>Kılıç Koltuk Mobilya Logo</image:title>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/milano-koltuk-takimi.jpg</image:loc>
+            <image:title>Milano Koltuk Takımı - Antakya Özel Ölçü İmalat</image:title>
+            <image:caption>Kılıç Koltuk Mobilya Milano koltuk takımı, buklet kumaş, gürgen iskelet</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/kose-takimi.jpg</image:loc>
+            <image:title>Köşe Koltuk Takımı - Hatay Özel Ölçü Mobilya</image:title>
+            <image:caption>Modüler köşe koltuk takımı, özel ölçü imalat, Antakya</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/yatak-odasi-koleksiyonu.jpg</image:loc>
+            <image:title>Yatak Odası Koleksiyonu - Antakya Mobilya</image:title>
+            <image:caption>Geniş bazalı karyola, gardırop ve şifonyer seti</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/yemek-masasi-2.jpg</image:loc>
+            <image:title>Yemek Masası ve Sandalye Takımı - Hatay</image:title>
+            <image:caption>Ahşap ve mermer dokulu yemek masası, ergonomik sandalyeler</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/magaza-fabrika.jpg</image:loc>
+            <image:title>Kılıç Koltuk Mobilya Fabrika Satış Mağazası</image:title>
+            <image:caption>Antakya Hatay mobilya atölyesi ve showroom</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/kose-hero-lux.jpg</image:loc>
+            <image:title>Lüks Köşe Takımı - Özel Tasarım</image:title>
+            <image:caption>VIP tasarım köşe koltuk, özel ölçü imalat</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/cift-kisilik-yatak.jpg</image:loc>
+            <image:title>Çift Kişilik Yatak ve Baza</image:title>
+            <image:caption>Geniş depolama alanlı çift kişilik baza ve yatak modelleri</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/tek-kisilik-yatak.jpg</image:loc>
+            <image:title>Tek Kişilik Yatak ve Baza</image:title>
+            <image:caption>Tek kişilik baza ve yatak modelleri, Kılıç Koltuk Mobilya</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/tv-unitesi.jpg</image:loc>
+            <image:title>Modern TV Ünitesi</image:title>
+            <image:caption>Modern TV ünitesi modelleri, Antakya mobilya</image:caption>
+        </image:image>
+        <image:image>
+            <image:loc>https://kilickoltukmobilya.com/kumas-kartelasi.jpg</image:loc>
+            <image:title>Kumaş Kartelası - Renk ve Doku Seçenekleri</image:title>
+            <image:caption>İthal buklet kumaş, silinebilir VIP kumaş seçenekleri</image:caption>
+        </image:image>
+    </url>
+
+    <!-- Oturma Odası Bölümü -->
+    <url>
+        <loc>https://kilickoltukmobilya.com/#oturma-odasi</loc>
+        <lastmod>2026-09-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Yatak Odası Bölümü -->
+    <url>
+        <loc>https://kilickoltukmobilya.com/#yatak-odasi</loc>
+        <lastmod>2026-09-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Yemek Odası Bölümü -->
+    <url>
+        <loc>https://kilickoltukmobilya.com/#yemek-odasi</loc>
+        <lastmod>2026-09-15</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Hakkımızda Bölümü -->
+    <url>
+        <loc>https://kilickoltukmobilya.com/#hakkimizda</loc>
+        <lastmod>2026-09-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- İletişim Bölümü -->
+    <url>
+        <loc>https://kilickoltukmobilya.com/#iletisim</loc>
+        <lastmod>2026-09-15</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+</urlset>

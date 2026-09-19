@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Aktif Dosyayı Çalıştır (Current File)",
+            "file": "${file}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Admin Paneli (admin.html)",
+            "file": "${workspaceFolder}/admin.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Web Sitesi (index.html)",
+            "file": "${workspaceFolder}/index.html"
+        }
+    ]
+}
