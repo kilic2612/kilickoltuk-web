@@ -5,6 +5,24 @@ const navbar = document.getElementById('navbar');
 const navLinks = document.querySelectorAll('.nav-link');
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('nav-menu');
+const navBackdrop = document.getElementById('navBackdrop');
+
+// Mobil Menü Aç/Kapa Fonksiyonu (Backdrop & Body Scroll Kilidi ile)
+function toggleMobileMenu(open) {
+    const shouldOpen = (open !== undefined) ? open : !navMenu?.classList.contains('active');
+    if (shouldOpen) {
+        hamburger?.classList.add('active');
+        navMenu?.classList.add('active');
+        navBackdrop?.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    } else {
+        hamburger?.classList.remove('active');
+        navMenu?.classList.remove('active');
+        navBackdrop?.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+window.toggleMobileMenu = toggleMobileMenu;
 
 // Sayfa Başına Yumuşak Dönüş Fonksiyonu (Lenis + Native Scroll)
 function sayfaBasaDon(e) {
@@ -19,10 +37,7 @@ function sayfaBasaDon(e) {
     }
 
     // Mobil menü açıksa kapat
-    if (navMenu && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        if (hamburger) hamburger.classList.remove('active');
-    }
+    toggleMobileMenu(false);
 }
 window.sayfaBasaDon = sayfaBasaDon;
 
@@ -101,10 +116,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
             }
 
             // Close mobile menu if open
-            if (navMenu && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                if (hamburger) hamburger.classList.remove('active');
-            }
+            toggleMobileMenu(false);
         }
     });
 });
@@ -114,11 +126,17 @@ document.querySelectorAll('#site-logo, #footer-logo, .logo, .footer-logo').forEa
     logo.addEventListener('click', sayfaBasaDon);
 });
 
-// Mobile menu toggle
+// Mobile menu toggle & Backdrop click
 if (hamburger) {
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
+    hamburger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMobileMenu();
+    });
+}
+
+if (navBackdrop) {
+    navBackdrop.addEventListener('click', () => {
+        toggleMobileMenu(false);
     });
 }
 
@@ -269,7 +287,7 @@ if (contactForm) {
             throw new Error('Local environment');
         } catch (error) {
             saveLocalContactMessage(messageData);
-            showNotification('Mesajınız yerelde kaydedildi. En kısa sürede size dönüş yapacağız.', 'success');
+            showNotification('Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.', 'success');
             contactForm.reset();
         }
     });
@@ -322,7 +340,10 @@ function showNotification(message, type = 'info') {
             }
             
             .notification-success {
-                border-left-color: #4CAF50;
+                background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+                border-left: 5px solid #047857 !important;
+                color: #ffffff !important;
+                box-shadow: 0 12px 28px -5px rgba(16, 185, 129, 0.45), 0 8px 12px -6px rgba(16, 185, 129, 0.3) !important;
             }
             
             .notification-info {
@@ -349,7 +370,15 @@ function showNotification(message, type = 'info') {
             }
             
             .notification-success .notification-content i {
-                color: #4CAF50;
+                color: #ffffff !important;
+                background: rgba(255, 255, 255, 0.22);
+                width: 34px;
+                height: 34px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 50%;
+                font-size: 1.1rem;
             }
             
             .notification-info .notification-content i {
@@ -368,6 +397,13 @@ function showNotification(message, type = 'info') {
                 color: #000;
                 font-weight: 500;
             }
+
+            .notification-success .notification-content span {
+                color: #ffffff !important;
+                font-weight: 600;
+                font-size: 0.95rem;
+                letter-spacing: 0.2px;
+            }
             
             .notification-close {
                 background: none;
@@ -376,6 +412,14 @@ function showNotification(message, type = 'info') {
                 color: #999;
                 padding: 0.25rem;
                 transition: color 0.2s;
+            }
+            
+            .notification-success .notification-close {
+                color: rgba(255, 255, 255, 0.85) !important;
+            }
+
+            .notification-success .notification-close:hover {
+                color: #ffffff !important;
             }
             
             .notification-close:hover {
@@ -679,21 +723,19 @@ if (typeof Lenis !== 'undefined') {
 
         // 📌 KÖŞE TAKIMLARI - Fotoğraf eklemek için dosya adını yazın
         'kose-takimi': [
-            'gri-gumus-kose-takimi.jpg',
-            'bej-u-kose-takimi.jpg',
-            'krem-gold-kose-takimi.jpg',
-            'bej-kose-takimi.jpg',
-            'yeni-kose-takimi.jpg',
-            'cizgili-kose-takimi.jpg',
-            'ahsap-kose-takimi.jpg',
-            'lacivert-kose-takimi.jpg',
-            'kose-takimi.jpg'
-            // 'kose-2.jpg',
+            'images/gri-gumus-kose-takimi.jpg',
+            'images/bej-u-kose-takimi.jpg',
+            'images/krem-gold-kose-takimi.jpg',
+            'images/bej-kose-takimi.jpg',
+            'images/yeni-kose-takimi.jpg',
+            'images/cizgili-kose-takimi.jpg',
+            'images/ahsap-kose-takimi.jpg',
+            'images/lacivert-kose-takimi.jpg'
         ],
 
         // 📌 TV ÜNİTELERİ
         'tv-unitesi': [
-            'tv-unitesi.jpg'
+            'images/tv-unitesi.jpg'
             // 'tv-2.jpg',
         ],
 
@@ -702,17 +744,17 @@ if (typeof Lenis !== 'undefined') {
         // ══════════════════════════════════════════════════════════
 
         'yatak-odasi-koleksiyonu': [
-            'yatak-odasi-koleksiyonu.jpg'
+            'images/yatak-odasi-koleksiyonu.jpg'
             // 'yatak-2.jpg',
         ],
 
         'cift-kisilik-yatak': [
-            'cift-kisilik-yatak.jpg'
+            'images/cift-kisilik-yatak.jpg'
             // 'cift-yatak-2.jpg',
         ],
 
         'tek-kisilik-yatak': [
-            'tek-kisilik-yatak.jpg'
+            'images/tek-kisilik-yatak.jpg'
         ],
 
         // ══════════════════════════════════════════════════════════
@@ -720,9 +762,22 @@ if (typeof Lenis !== 'undefined') {
         // ══════════════════════════════════════════════════════════
 
         'yemek-masasi': [
-            'yemek-masasi-1.jpg',
-            'yemek-masasi-2.jpg'
-            // 'yemek-3.jpg',
+            'images/yemek-masasi-1.jpg',
+            'images/yemek-masasi-2.jpg',
+            'images/yemek-masasi-3.jpg',
+            'images/yemek-masasi-4.jpg',
+            'images/yemek-masasi-5.jpg',
+            'images/yemek-masasi-6.jpg',
+            'images/yemek-masasi-7.jpg',
+            'images/yemek-masasi-8.jpg',
+            'images/yemek-masasi-9.jpg',
+            'images/yemek-masasi-10.jpg',
+            'images/yemek-masasi-11.jpg',
+            'images/yemek-masasi-12.jpg',
+            'images/yemek-masasi-13.jpg',
+            'images/yemek-masasi-14.jpg',
+            'images/yemek-masasi-15.jpg',
+            'images/yemek-masasi-16.jpg'
         ]
     };
 
@@ -800,12 +855,12 @@ if (typeof Lenis !== 'undefined') {
                 id: 'milano-curved-koltuk-takimi',
                 ad: 'Milano Curved Buklet Koltuk Takımı',
                 kategori: 'Koltuk Takımları',
-                foto: 'milano-koltuk-takimi.jpg',
+                foto: 'images/milano-koltuk-takimi.jpg',
                 gorseller: [
-                    'milano-koltuk-takimi.jpg',
-                    'milano-uclu-krem.jpg',
-                    'atolye-milano-takim.jpg',
-                    'atolye-milano-antrasit.jpg'
+                    'images/milano-koltuk-takimi.jpg',
+                    'images/milano-uclu-krem.jpg',
+                    'images/atolye-milano-takim.jpg',
+                    'images/atolye-milano-antrasit.jpg'
                 ],
                 rozetler: ['35 DNS HR Sünger', 'İthal Buklet Kumaş', 'Fırınlanmış Gürgen İskelet', 'Leke Tutmaz'],
                 ozellikler: [
@@ -936,9 +991,9 @@ if (typeof Lenis !== 'undefined') {
                 id: 'asya-koltuk-takimi',
                 ad: 'Asya Modern Koltuk Takımı',
                 kategori: 'Koltuk Takımları',
-                foto: 'asya-koltuk-takimi.jpg',
+                foto: 'images/asya-koltuk-takimi.jpg',
                 gorseller: [
-                    'asya-koltuk-takimi.jpg',
+                    'images/asya-koltuk-takimi.jpg',
                     'galeri/oturma-odasi/asya-1.jpg',
                     'galeri/oturma-odasi/asya-2.jpg',
                     'galeri/oturma-odasi/asya-3.jpg'
@@ -958,9 +1013,9 @@ if (typeof Lenis !== 'undefined') {
                 id: 'venedik-koltuk-takimi',
                 ad: 'Venedik Gece Mavisi Koltuk Takımı',
                 kategori: 'Koltuk Takımları',
-                foto: 'venedik-koltuk-takimi.jpg',
+                foto: 'images/venedik-koltuk-takimi.jpg',
                 gorseller: [
-                    'venedik-koltuk-takimi.jpg',
+                    'images/venedik-koltuk-takimi.jpg',
                     'galeri/oturma-odasi/venedik-1.jpg',
                     'galeri/oturma-odasi/venedik-2.jpg',
                     'galeri/oturma-odasi/venedik-3.jpg'
@@ -979,9 +1034,9 @@ if (typeof Lenis !== 'undefined') {
                 id: 'paris-koltuk-takimi',
                 ad: 'Paris Kiremit & Krem Koltuk Takımı',
                 kategori: 'Koltuk Takımları',
-                foto: 'paris-koltuk-takimi.jpg',
+                foto: 'images/paris-koltuk-takimi.jpg',
                 gorseller: [
-                    'paris-koltuk-takimi.jpg',
+                    'images/paris-koltuk-takimi.jpg',
                     'galeri/oturma-odasi/paris-1.jpg',
                     'galeri/oturma-odasi/paris-2.jpg',
                     'galeri/oturma-odasi/paris-3.jpg',
@@ -1019,9 +1074,9 @@ if (typeof Lenis !== 'undefined') {
                 id: 'monaco-koltuk-takimi',
                 ad: 'Monaco Petrol Mavisi Koltuk Takımı',
                 kategori: 'Koltuk Takımları',
-                foto: 'monaco-koltuk-takimi.jpg',
+                foto: 'images/monaco-koltuk-takimi.jpg',
                 gorseller: [
-                    'monaco-koltuk-takimi.jpg',
+                    'images/monaco-koltuk-takimi.jpg',
                     'galeri/oturma-odasi/monaco-1.jpg',
                     'galeri/oturma-odasi/monaco-2.jpg',
                     'galeri/oturma-odasi/monaco-3.jpg'
@@ -1039,9 +1094,9 @@ if (typeof Lenis !== 'undefined') {
                 id: 'verona-koltuk-takimi',
                 ad: 'Verona Hardal & Vizon Koltuk Takımı',
                 kategori: 'Koltuk Takımları',
-                foto: 'verona-koltuk-takimi.jpg',
+                foto: 'images/verona-koltuk-takimi.jpg',
                 gorseller: [
-                    'verona-koltuk-takimi.jpg',
+                    'images/verona-koltuk-takimi.jpg',
                     'galeri/oturma-odasi/verona-1.jpg',
                     'galeri/oturma-odasi/verona-2.jpg',
                     'galeri/oturma-odasi/verona-3.jpg',
@@ -1062,8 +1117,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'kose-takimi',
                 ad: 'Lüks Köşe Koltuk Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'kose-takimi.jpg',
-                gorseller: ['kose-takimi.jpg', 'kose-hero-lux.jpg'],
+                foto: 'images/kose-takimi.jpg',
+                gorseller: ['images/kose-takimi.jpg', 'images/kose-hero-lux.jpg'],
                 rozetler: ['Modüler Köşe', '32 DNS Sünger', 'Fırınlanmış Gürgen', 'Silinebilir Kumaş'],
                 ozellikler: [
                     'L ve U Şeklinde Modüler Köşe Koltuk Çözümleri',
@@ -1078,8 +1133,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'lacivert-kose-takimi',
                 ad: 'Lacivert Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'lacivert-kose-takimi.jpg',
-                gorseller: ['lacivert-kose-takimi.jpg'],
+                foto: 'images/lacivert-kose-takimi.jpg',
+                gorseller: ['images/lacivert-kose-takimi.jpg'],
                 rozetler: ['Silinebilir Kumaş', 'Fırınlanmış Gürgen', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği ile kolay temizlik imkanı',
@@ -1093,8 +1148,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'ahsap-kose-takimi',
                 ad: 'Ahşap Detaylı Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'ahsap-kose-takimi.jpg',
-                gorseller: ['ahsap-kose-takimi.jpg'],
+                foto: 'images/ahsap-kose-takimi.jpg',
+                gorseller: ['images/ahsap-kose-takimi.jpg'],
                 rozetler: ['Silinebilir Kumaş', 'Fırınlanmış Gürgen', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği ile pratik kullanım',
@@ -1108,8 +1163,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'cizgili-kose-takimi',
                 ad: 'Çizgili Yastıklı Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'cizgili-kose-takimi.jpg',
-                gorseller: ['cizgili-kose-takimi.jpg'],
+                foto: 'images/cizgili-kose-takimi.jpg',
+                gorseller: ['images/cizgili-kose-takimi.jpg'],
                 rozetler: ['Silinebilir Kumaş', 'Fırınlanmış Gürgen', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği',
@@ -1123,8 +1178,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'yeni-kose-takimi',
                 ad: 'Özel Tasarım Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'yeni-kose-takimi.jpg',
-                gorseller: ['yeni-kose-takimi.jpg'],
+                foto: 'images/yeni-kose-takimi.jpg',
+                gorseller: ['images/yeni-kose-takimi.jpg'],
                 rozetler: ['Silinebilir Kumaş', 'Fırınlanmış Gürgen', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği ile rahat kullanım',
@@ -1138,8 +1193,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'bej-kose-takimi',
                 ad: 'Bej Renk Lüks Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'bej-kose-takimi.jpg',
-                gorseller: ['bej-kose-takimi.jpg'],
+                foto: 'images/bej-kose-takimi.jpg',
+                gorseller: ['images/bej-kose-takimi.jpg'],
                 rozetler: ['Silinebilir Kumaş', 'Fırınlanmış Gürgen', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği ile kolay temizlik',
@@ -1153,8 +1208,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'krem-gold-kose-takimi',
                 ad: 'Krem Gold Detaylı Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'krem-gold-kose-takimi.jpg',
-                gorseller: ['krem-gold-kose-takimi.jpg'],
+                foto: 'images/krem-gold-kose-takimi.jpg',
+                gorseller: ['images/krem-gold-kose-takimi.jpg'],
                 rozetler: ['Silinebilir Kumaş', 'Fırınlanmış Gürgen', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği ve gold (altın) detaylar',
@@ -1168,8 +1223,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'bej-u-kose-takimi',
                 ad: 'Bej Renk U Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'bej-u-kose-takimi.jpg',
-                gorseller: ['bej-u-kose-takimi.jpg'],
+                foto: 'images/bej-u-kose-takimi.jpg',
+                gorseller: ['images/bej-u-kose-takimi.jpg'],
                 rozetler: ['Geniş U Tasarım', 'Silinebilir Kumaş', 'Özel Ölçü'],
                 ozellikler: [
                     'Geniş salonlar için özel U tipi tasarım',
@@ -1183,8 +1238,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'gri-gumus-kose-takimi',
                 ad: 'Gri Gümüş Detaylı Köşe Takımı',
                 kategori: 'Köşe Takımları',
-                foto: 'gri-gumus-kose-takimi.jpg',
-                gorseller: ['gri-gumus-kose-takimi.jpg'],
+                foto: 'images/gri-gumus-kose-takimi.jpg',
+                gorseller: ['images/gri-gumus-kose-takimi.jpg'],
                 rozetler: ['Gümüş Detaylar', 'Silinebilir Kumaş', 'Özel Ölçü'],
                 ozellikler: [
                     'Silinebilir kumaş özelliği ve gümüş (silver) halka detayları',
@@ -1200,8 +1255,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'tv-unitesi',
                 ad: 'Modern Ahşap TV Ünitesi',
                 kategori: 'TV Üniteleri',
-                foto: 'tv-unitesi.jpg',
-                gorseller: ['tv-unitesi.jpg'],
+                foto: 'images/tv-unitesi.jpg',
+                gorseller: ['images/tv-unitesi.jpg'],
                 rozetler: ['Doğal Ahşap', 'Frenli Ray Sistem', 'Özel Tasarım'],
                 ozellikler: [
                     '1. Sınıf Doğal Ahşap Kaplama ve MDF Malzeme',
@@ -1216,8 +1271,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'yatak-odasi-koleksiyonu',
                 ad: 'Lüks Yatak Odası Koleksiyonu',
                 kategori: 'Yatak Odası',
-                foto: 'yatak-odasi-koleksiyonu.jpg',
-                gorseller: ['yatak-odasi-koleksiyonu.jpg'],
+                foto: 'images/yatak-odasi-koleksiyonu.jpg',
+                gorseller: ['images/yatak-odasi-koleksiyonu.jpg'],
                 rozetler: ['Tam Takım', 'Aynalı Gardırop', 'Baza & Başlık'],
                 ozellikler: [
                     '6 Kapaklı / Sürgülü Aynalı Gardırop Tasarımı',
@@ -1232,8 +1287,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'cift-kisilik-yatak',
                 ad: 'Çift Kişilik Baza & Yatak Başlığı',
                 kategori: 'Yatak & Baza',
-                foto: 'cift-kisilik-yatak.jpg',
-                gorseller: ['cift-kisilik-yatak.jpg'],
+                foto: 'images/cift-kisilik-yatak.jpg',
+                gorseller: ['images/cift-kisilik-yatak.jpg'],
                 rozetler: ['Geniş İç Hacim', 'Çelik Profil Baza', 'Ortopedik Yatak'],
                 ozellikler: [
                     'Geniş Depolama Alanlı Çelik Profil İskelet Baza',
@@ -1248,8 +1303,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'tek-kisilik-yatak',
                 ad: 'Tek Kişilik Baza & Yatak Takımı',
                 kategori: 'Yatak & Baza',
-                foto: 'tek-kisilik-yatak.jpg',
-                gorseller: ['tek-kisilik-yatak.jpg'],
+                foto: 'images/tek-kisilik-yatak.jpg',
+                gorseller: ['images/tek-kisilik-yatak.jpg'],
                 rozetler: ['Sandıklı Baza', 'Dayanıklı İskelet', 'Ergonomik'],
                 ozellikler: [
                     'Sandıklı Geniş İç Hacimli Baza',
@@ -1264,8 +1319,8 @@ if (typeof Lenis !== 'undefined') {
                 id: 'yemek-masasi-1',
                 ad: 'Lüks Açılır Yemek Masası (6 Kişilik)',
                 kategori: 'Yemek Odası',
-                foto: 'yemek-masasi-1.jpg',
-                gorseller: ['yemek-masasi-1.jpg', 'yemek-masasi-2.jpg'],
+                foto: 'images/yemek-masasi-1.jpg',
+                gorseller: ['images/yemek-masasi-1.jpg', 'images/yemek-masasi-2.jpg'],
                 rozetler: ['6 Kişilik', 'Açılır Mekanizma', 'Ergonomik Sandalye'],
                 ozellikler: [
                     'Açılabilir Ray Mekanizmalı Genişletilebilir Masa',
@@ -1278,26 +1333,260 @@ if (typeof Lenis !== 'undefined') {
                 id: 'yemek-masasi-2',
                 ad: 'Kompakt Yemek Masası (4 Kişilik)',
                 kategori: 'Yemek Odası',
-                foto: 'yemek-masasi-2.jpg',
-                gorseller: ['yemek-masasi-2.jpg'],
+                foto: 'images/yemek-masasi-2.jpg',
+                gorseller: ['images/yemek-masasi-2.jpg'],
                 rozetler: ['4 Kişilik', 'Kompakt Şık Tasarım', 'Ahşap Ayak'],
                 ozellikler: [
                     'Mutfak ve Salon İçi Kompakt Ölçü Tasarımı',
                     '4 Adet Konforlu Döşemeli Sandalye'
                 ],
                 aciklama: '4 Kişilik Mutfak & Salon Yemek Masası Takımı'
+            },
+            {
+                id: 'yemek-masasi-3',
+                ad: 'Traverten Desen Açılır Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-3.jpg',
+                gorseller: ['images/yemek-masasi-3.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Masa', 'Antrasit Sandalye'],
+                ozellikler: [
+                    'Açılabilir Mekanizmalı Traverten / Taş Desen Masa Tablası',
+                    '6 Adet Dikey Fitilli Ergonomik Antrasit Kumaş Sandalye',
+                    'Beyaz Konik Ahşap Ayaklar',
+                    'Kolay Temizlenebilir, Leke Tutmaz Kumaş Yüzeyi'
+                ],
+                aciklama: 'Açılabilir Traverten Masa + 6 Adet Antrasit Sandalye | Beyaz Ahşap Ayak'
+            },
+            {
+                id: 'yemek-masasi-4',
+                ad: 'Oval Mermer Tasarım Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-4.jpg',
+                gorseller: ['images/yemek-masasi-4.jpg'],
+                rozetler: ['6 Kişilik', 'Oval Mermer', 'Kavisli Sandalye'],
+                ozellikler: [
+                    'Özel Kesim Oval Beyaz Mermer Desen Tabla',
+                    '6 Adet Kavisli İskeletli Füme Antrasit Sandalye',
+                    'Beyaz Fırın Boyalı Masif Ahşap Ayaklar',
+                    'Kolay Silinebilir, Leke Tutmaz Kumaş ve Pürüzsüz Yüzey'
+                ],
+                aciklama: 'Oval Mermer Desen Masa + 6 Adet Kavisli Sandalye | Beyaz Ayaklar'
+            },
+            {
+                id: 'yemek-masasi-5',
+                ad: 'Oniks Mermer Desen Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-5.jpg',
+                gorseller: ['images/yemek-masasi-5.jpg'],
+                rozetler: ['6 Kişilik', 'Oniks Mermer', 'Siyah Ayak'],
+                ozellikler: [
+                    'Doğal Damarlı Sıcak Oniks Mermer Desen Masa Tablası',
+                    '6 Adet Dikey Dikişli Ergonomik Antrasit Kadife Sandalye',
+                    'Siyah Masif Ahşap Dayanıklı Ayak Yapısı',
+                    'Çizilmeye Karşı Dayanıklı Parlak Koruyucu Yüzey'
+                ],
+                aciklama: 'Sıcak Oniks Desen Masa + 6 Adet Antrasit Sandalye | Siyah Masif Ayaklar'
+            },
+            {
+                id: 'yemek-masasi-6',
+                ad: 'Ceviz Desen Açılır Ahşap Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-6.jpg',
+                gorseller: ['images/yemek-masasi-6.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Ceviz Masa', 'Keten Camel Sandalye'],
+                ozellikler: [
+                    'Doğal Ceviz Ağaç Dokulu Açılabilir Masa Tablası',
+                    '6 Adet Ergonomik Dikey Fitilli Camel / Bej Kumaş Sandalye',
+                    'Fırınlanmış Masif Ceviz Ahşap Ayaklar',
+                    'Genişletilebilir Akıcı Ray Mekanizması'
+                ],
+                aciklama: 'Açılır Doğal Ceviz Masa + 6 Adet Camel Sandalye | Masif Ahşap İskelet'
+            },
+            {
+                id: 'yemek-masasi-7',
+                ad: 'Oval Traverten Lüks Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-7.jpg',
+                gorseller: ['images/yemek-masasi-7.jpg'],
+                rozetler: ['6 Kişilik', 'Oval Traverten', 'Vizon Sandalye'],
+                ozellikler: [
+                    'Özel Oval Kesim Parlak Açık Traverten Mermer Desen Tabla',
+                    '6 Adet Kavisli Krem Ahşap İskeletli Vizon / Mocha Sandalye',
+                    'Fırın Boyalı Krem Lake Masif Ahşap Ayaklar',
+                    'Leke Tutmaz Dokulu Kumaş ve Pürüzsüz Dayanıklı Yüzey'
+                ],
+                aciklama: 'Oval Traverten Desen Masa + 6 Adet Vizon Sandalye | Krem Ahşap Ayaklar'
+            },
+            {
+                id: 'yemek-masasi-8',
+                ad: 'Oval Meşe Ahşap Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-8.jpg',
+                gorseller: ['images/yemek-masasi-8.jpg'],
+                rozetler: ['6 Kişilik', 'Oval Meşe', 'Bukle Sandalye'],
+                ozellikler: [
+                    'Doğal Meşe Ahşap Doku ve Beyaz Fitilli Özel Kenar Tasarımı',
+                    'Beyaz Yivli Sütun Ayak Kaidesi ile Yüksek Denge',
+                    '6 Adet Kavisli Beyaz İskeletli Ekru Bukle Sandalye',
+                    'Leke Tutmaz, Silinebilir Yumuşak Dokulu Bukle Kumaş'
+                ],
+                aciklama: 'Oval Meşe Masa + 6 Adet Ekru Bukle Sandalye | Beyaz Lake İskelet'
+            },
+            {
+                id: 'yemek-masasi-9',
+                ad: 'Oval Parlak Lake Beyaz Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-9.jpg',
+                gorseller: ['images/yemek-masasi-9.jpg'],
+                rozetler: ['6 Kişilik', 'Parlak Lake', 'Gri Dokulu Sandalye'],
+                ozellikler: [
+                    'Ultra Parlak Çizilmez Beyaz Lake Oval Masa Tablası',
+                    'Beyaz Yivli Dekoratif Sütun Ayak Tasarımı',
+                    '6 Adet Kavisli Beyaz Lake İskeletli Açık Gri Kumaş Sandalye',
+                    'Kolay Temizlenebilir Leke Tutmaz Kumaş ve Pürüzsüz Yüzey'
+                ],
+                aciklama: 'Oval Parlak Lake Masa + 6 Adet Gri Sandalye | Beyaz Yivli Ayak'
+            },
+            {
+                id: 'yemek-masasi-10',
+                ad: 'Doğal Ceviz & Meşe Ahşap Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-10.jpg',
+                gorseller: ['images/yemek-masasi-10.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Mekanizma', 'Masif Ahşap Sandalye'],
+                ozellikler: [
+                    'Zarif Ceviz Dokulu Açılır Mekanizmalı Masa Tablası',
+                    '6 Adet Masif Ahşap Kavisli Kollu Grej / Vizon Sandalye',
+                    'Fırınlanmış Doğal Masif Ahşap Gövde ve Ayaklar',
+                    'Ergonomik Sırt Desteği ve Leke Tutmaz Silinebilir Kumaş'
+                ],
+                aciklama: 'Açılır Ahşap Masa + 6 Adet Kavisli Ahşap Sandalye | Masif İskelet'
+            },
+            {
+                id: 'yemek-masasi-11',
+                ad: 'Beyaz Açılır Yemek Masası & Gold Şeritli Antrasit Takım (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-11.jpg',
+                gorseller: ['images/yemek-masasi-11.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Beyaz Masa', 'Gold Şerit Detay'],
+                ozellikler: [
+                    'Pürüzsüz Beyaz İpek Mat Yüzeyli Açılabilir Masa Tablası',
+                    '6 Adet Sırtı Gold Metal Şeritli Antrasit Kadife Sandalye',
+                    'Beyaz Fırın Boyalı Masif Ahşap Dayanıklı Ayaklar',
+                    'Akıcı Ray Mekanizması ile Kolay Genişletilebilir'
+                ],
+                aciklama: 'Açılır Beyaz Masa + 6 Adet Gold Detaylı Antrasit Sandalye | Beyaz Ayaklar'
+            },
+            {
+                id: 'yemek-masasi-12',
+                ad: 'Siyah Mermer Tasarım Oval Yemek Masası Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-12.jpg',
+                gorseller: ['images/yemek-masasi-12.jpg'],
+                rozetler: ['6 Kişilik', 'Siyah Mermer', 'Kollu Bukle Sandalye'],
+                ozellikler: [
+                    'Doğal Beyaz Damarlı Parlak Siyah Mermer Desen Oval Tabla',
+                    'Siyah Yivli Çift Sütun Ayak Kaidesi ile Üstün Stabilite',
+                    '6 Adet Geometrik Siyah Ahşap İskeletli Ekru Sandalye',
+                    'Silinebilir Premium Bukle Kumaş ve Konforlu Kolçaklar'
+                ],
+                aciklama: 'Oval Siyah Mermer Masa + 6 Adet Kollu Ekru Sandalye | Siyah İskelet'
+            },
+            {
+                id: 'yemek-masasi-13',
+                ad: 'Ceviz Açılır Ahşap Masa & Krem Bukle Sandalye Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-13.jpg',
+                gorseller: ['images/yemek-masasi-13.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Masa', 'Ahşap Kollu Sandalye'],
+                ozellikler: [
+                    'Akıcı Ray Mekanizmalı Doğal Ceviz Desen Açılır Masa Tablası',
+                    '6 Adet Sıcak Ahşap Kavisli Gövdeli Krem Bukle Sandalye',
+                    'Fırınlanmış Doğal Masif Ahşap Konik Ayaklar',
+                    'Leke Tutmaz, Silinebilir Yumuşak Dokulu Bukle Kumaş'
+                ],
+                aciklama: 'Açılır Ceviz Masa + 6 Adet Krem Bukle Sandalye | Masif Ahşap Ayaklar'
+            },
+            {
+                id: 'yemek-masasi-14',
+                ad: 'Doğal Ceviz Masa & Kiremit Terakota Sandalye Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-14.jpg',
+                gorseller: ['images/yemek-masasi-14.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Mekanizma', 'Kiremit Sandalye'],
+                ozellikler: [
+                    'Doğal Ceviz Ağaç Desenli Açılabilir Fonksiyonel Masa',
+                    '6 Adet Sıcak Kiremit / Terakota Dokulu Ahşap Kollu Sandalye',
+                    'Fırınlanmış Masif Ahşap Gövde ve Dayanıklı Ayaklar',
+                    'Leke Tutmaz, Kolay Silinebilir Yumuşak Dokuma Kumaş'
+                ],
+                aciklama: 'Açılır Ceviz Masa + 6 Adet Kiremit Sandalye | Masif Ahşap İskelet'
+            },
+            {
+                id: 'yemek-masasi-15',
+                ad: 'Parlak Ceviz Açılır Masa & Krem Fitilli Sandalye Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-15.jpg',
+                gorseller: ['images/yemek-masasi-15.jpg'],
+                rozetler: ['6 Kişilik', 'Parlak Ceviz Masa', 'Siyah Ahşap Ayak'],
+                ozellikler: [
+                    'Özel Parlak Koruyucu Cilalı Ceviz Ağaç Desenli Açılır Masa',
+                    'Siyah Kavisli Kenar Detaylı Modern Masa Gövdesi',
+                    '6 Adet Dikey Fitilli İnci Bej Kadife Kumaş Sandalye',
+                    'Fırınlanmış Siyah Masif Ahşap Konik Ayaklar'
+                ],
+                aciklama: 'Parlak Ceviz Masa + 6 Adet Bej Fitilli Sandalye | Siyah Masif Ayaklar'
+            },
+            {
+                id: 'yemek-masasi-16',
+                ad: 'Masif Ceviz Açılır Masa & Keten Gri Sandalye Takımı (6 Kişilik)',
+                kategori: 'Yemek Odası',
+                foto: 'images/yemek-masasi-16.jpg',
+                gorseller: ['images/yemek-masasi-16.jpg'],
+                rozetler: ['6 Kişilik', 'Açılır Ahşap Masa', 'Ahşap Kavisli Sandalye'],
+                ozellikler: [
+                    'Doğal Ceviz Kaplama Açılabilir Akıcı Raylı Masa Tablası',
+                    '6 Adet Masif Ahşap Kavisli Gövdeli Açık Gri Keten Sandalye',
+                    'Fırınlanmış Masif Gürgen / Meşe Ağaç Dayanıklı Ayaklar',
+                    'Leke Tutmaz, Nefes Alan Dokuma Kumaş Döşeme'
+                ],
+                aciklama: 'Açılır Ceviz Masa + 6 Adet Açık Gri Sandalye | Masif Ahşap Ayaklar'
             }
         ]
     };
+
+    // Kategori düzeltme kontrolü (Lale isimli yatak/baza yanlışlıkla başka kategoriye eklendiyse otomatik taşı)
+    function laleKategoriDuzelt(targetObj) {
+        if (!targetObj || typeof targetObj !== 'object') return false;
+        let degisti = false;
+        ['yemek-masasi', 'koltuk-takimi', 'kose-takimi', 'tv-unitesi'].forEach(kat => {
+            if (Array.isArray(targetObj[kat])) {
+                const laleIdx = targetObj[kat].findIndex(u => u && u.ad && u.ad.toLowerCase().trim() === 'lale');
+                if (laleIdx !== -1) {
+                    const item = targetObj[kat].splice(laleIdx, 1)[0];
+                    item.kategori = 'Çift Kişilik Yatak & Baza';
+                    if (!targetObj['cift-kisilik-yatak']) targetObj['cift-kisilik-yatak'] = [];
+                    targetObj['cift-kisilik-yatak'].unshift(item);
+                    degisti = true;
+                }
+            }
+        });
+        return degisti;
+    }
 
     // Admin panelinden kayıtlı ürünleri oku (IndexedDB + LocalStorage + API / products.json)
     let adminUrunler = {};
     try { 
         adminUrunler = JSON.parse(localStorage.getItem('kilickoltuk_urunler') || '{}'); 
+        if (laleKategoriDuzelt(adminUrunler)) {
+            localStorage.setItem('kilickoltuk_urunler', JSON.stringify(adminUrunler));
+        }
     } catch(e) {}
 
     const urunler = {};
     function urunleriBirlestir(ekstra) {
+        if (ekstra) laleKategoriDuzelt(ekstra);
+        laleKategoriDuzelt(adminUrunler);
         Object.keys(varsayilanUrunler).forEach(k => {
             const adminEklentileri = (ekstra && ekstra[k]) || (adminUrunler && adminUrunler[k]) || [];
             urunler[k] = [...adminEklentileri, ...varsayilanUrunler[k]];
@@ -1321,7 +1610,15 @@ if (typeof Lenis !== 'undefined') {
                     const getReq = tx.objectStore('urunler_store').get('kilickoltuk_urunler');
                     getReq.onsuccess = () => {
                         if (getReq.result && typeof getReq.result === 'object') {
-                            adminUrunler = Object.assign({}, adminUrunler, getReq.result);
+                            const idbData = getReq.result;
+                            if (laleKategoriDuzelt(idbData)) {
+                                try {
+                                    const txWrite = db.transaction('urunler_store', 'readwrite');
+                                    txWrite.objectStore('urunler_store').put(idbData, 'kilickoltuk_urunler');
+                                    localStorage.setItem('kilickoltuk_urunler', JSON.stringify(idbData));
+                                } catch(e) {}
+                            }
+                            adminUrunler = Object.assign({}, adminUrunler, idbData);
                             urunleriBirlestir(adminUrunler);
                         }
                     };
@@ -1330,7 +1627,21 @@ if (typeof Lenis !== 'undefined') {
         } catch(e) {}
     }
 
-    // 2. Sunucu veya products.json dosyasından yükle
+    // 2. Firebase Firestore'dan ürünleri yükle (Bulut Senkronizasyonu)
+    if (window.db) {
+        window.db.collection('site_data').doc('products').get().then(doc => {
+            if (doc.exists && doc.data()) {
+                const fsData = doc.data();
+                if (laleKategoriDuzelt(fsData)) {
+                    window.db.collection('site_data').doc('products').set(fsData).catch(()=>{});
+                }
+                adminUrunler = Object.assign({}, adminUrunler, fsData);
+                urunleriBirlestir(adminUrunler);
+            }
+        }).catch(() => {});
+    }
+
+    // 3. Sunucu veya products.json dosyasından yükle
     if (window.location.protocol.startsWith('http')) {
         fetch('api.php?action=get_products')
             .then(r => r.json())
@@ -1403,6 +1714,7 @@ if (typeof Lenis !== 'undefined') {
         katSayfasi.classList.add('aktif');
         document.body.style.overflow = 'hidden';
     }
+    window.katSayfasiAc = katSayfasiAc;
 
     // ============================================
     // BELLONA / İSTİKBAL TARZI LÜKS ÜRÜN DETAY MODALI MOTORU
@@ -1842,12 +2154,12 @@ if (typeof Lenis !== 'undefined') {
 
     function getLocalInstagramList() {
         const defaultInstagram = [
-            { foto: "milano-koltuk-takimi.jpg", likes: 284, comments: 24 },
-            { foto: "asya-koltuk-takimi.jpg", likes: 312, comments: 29 },
-            { foto: "venedik-koltuk-takimi.jpg", likes: 275, comments: 19 },
-            { foto: "paris-koltuk-takimi.jpg", likes: 248, comments: 22 },
-            { foto: "monaco-koltuk-takimi.jpg", likes: 290, comments: 27 },
-            { foto: "verona-koltuk-takimi.jpg", likes: 265, comments: 21 },
+            { foto: "images/milano-koltuk-takimi.jpg", likes: 284, comments: 24 },
+            { foto: "images/asya-koltuk-takimi.jpg", likes: 312, comments: 29 },
+            { foto: "images/venedik-koltuk-takimi.jpg", likes: 275, comments: 19 },
+            { foto: "images/paris-koltuk-takimi.jpg", likes: 248, comments: 22 },
+            { foto: "images/monaco-koltuk-takimi.jpg", likes: 290, comments: 27 },
+            { foto: "images/verona-koltuk-takimi.jpg", likes: 265, comments: 21 },
             { foto: "galeri/oturma-odasi/asya-1.jpg", likes: 195, comments: 18 },
             { foto: "galeri/oturma-odasi/venedik-1.jpg", likes: 184, comments: 14 }
         ];
@@ -1984,6 +2296,7 @@ if (typeof Lenis !== 'undefined') {
     if (nextBtn) {
         nextBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             nextSlide();
         });
     }
@@ -1991,6 +2304,7 @@ if (typeof Lenis !== 'undefined') {
     if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             prevSlide();
         });
     }
@@ -2246,7 +2560,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     kaynak: 'web-iletisim-formu'
                 });
                 if (typeof showNotification === 'function')
-                    showNotification('Mesajiniz Firebase\'e kaydedildi! En kisa surede donus yapacagiz.', 'success');
+                    showNotification('Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.', 'success');
                 newForm.reset();
                 return;
             } catch (err) {
@@ -2261,7 +2575,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('kilickoltuk_mesajlar', JSON.stringify(list));
         } catch(_) {}
         if (typeof showNotification === 'function')
-            showNotification('Mesajiniz kaydedildi. En kisa surede size donus yapacagiz.', 'success');
+            showNotification('Mesajınız başarıyla iletildi! En kısa sürede sizinle iletişime geçeceğiz.', 'success');
         newForm.reset();
     });
 })();
@@ -2358,57 +2672,932 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 // ============================================================
-// MAGAZA & TESLIMAT GALERI SEKMELERI
+// MAGAZA & TESLIMAT GALERI SEKMELERI (ADMIN & API ENTEGRASYONLU)
 // ============================================================
 (function initGalleryTabs() {
+    const isServer = window.location.protocol.startsWith('http');
 
-    // --- FOTOGRAFLARINIZI BURAYA EKLEYIN ---
-    // Ornek: 'galeri/magaza/foto1.jpg', 'galeri/teslimat/acilis.jpg'
-    const galeriMagaza   = [
-        // 'magaza-fabrika.jpg'   // <-- Hazir: mevcut magaza fotografi
+    // Gruplandırılmış çoklu fotoğraflı teslimatlar (Kısa başlık ve slogan açıklamalar)
+    const varsayilanTeslimat = [
+        {
+            id: 'teslimat-gulderen-toki-nervurlu',
+            ilce: 'Hatay / Gülderen TOKİ',
+            baslik: 'Nervürlü Koltuk Takımı',
+            aciklama: 'Siz de evinize konfor ve şıklık katmak istiyorsanız, özel ölçü üretimlerimiz için WhatsApp\'tan hemen fiyat alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-gulderen-toki-1.jpg',
+            fotolar: [
+                'images/teslimat-gulderen-toki-1.jpg',
+                'images/teslimat-gulderen-toki-2.jpg',
+                'images/teslimat-gulderen-toki-3.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-iskenderun-genis-l',
+            ilce: 'Hatay / İskenderun',
+            baslik: 'Geniş L Koltuk Takımı',
+            aciklama: 'Siz de evinize şıklık ve konfor katmak istiyorsanız, özel ölçü ve kumaş seçenekleri için WhatsApp\'tan bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-iskenderun-1.jpg',
+            fotolar: [
+                'images/teslimat-iskenderun-1.jpg',
+                'images/teslimat-iskenderun-2.jpg',
+                'images/teslimat-iskenderun-3.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-altinozu-fitilli',
+            ilce: 'Hatay / Altınözü',
+            baslik: 'Fitilli Krem Buklet Koltuk',
+            aciklama: 'Siz de evinize modern bir şıklık katmak istiyorsanız, özel kumaş kartelası ve detaylar için WhatsApp\'tan bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-altinozu-1.jpg',
+            fotolar: [
+                'images/teslimat-altinozu-1.jpg',
+                'images/teslimat-altinozu-2.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-samandag',
+            ilce: 'Hatay / Samandağ',
+            baslik: 'Özel Ölçü Salon Koltuk Takımı & Zigon Sehpa',
+            aciklama: 'Siz de salonunuza şıklık katmak istiyorsanız, beğendiğiniz modeller için WhatsApp\'tan hızlıca fiyat alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-samandag-1.jpg',
+            fotolar: [
+                'images/teslimat-samandag-1.jpg',
+                'images/teslimat-samandag-2.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-kirkhan-toki',
+            ilce: 'Hatay / Kırıkhan TOKİ',
+            baslik: 'Salon Takımı, Yatak Odası & Genç Odası',
+            aciklama: 'Siz de evinize şıklık ve ferahlık katmak istiyorsanız, oda ölçülerinize özel üretim için WhatsApp\'tan bize ulaşabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-kirkhan-toki-1.jpg',
+            fotolar: [
+                'images/teslimat-kirkhan-toki-1.jpg',
+                'images/teslimat-kirkhan-toki-2.jpg',
+                'images/teslimat-kirkhan-toki-3.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-payas',
+            ilce: 'Hatay / Payas',
+            baslik: 'Şömineli TV Ünitesi, Salon & Oval Yemek Masası',
+            aciklama: 'Siz de yaşam alanınıza şıklık katmak istiyorsanız, özel tasarım mobilyalarımız için WhatsApp\'tan detaylı bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-payas-1.jpg',
+            fotolar: [
+                'images/teslimat-payas-1.jpg',
+                'images/teslimat-payas-2.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-dikmece-toki',
+            ilce: 'Hatay / Dikmece TOKİ',
+            baslik: 'Vizon Salon Koltuk Takımı & Boy Aynası',
+            aciklama: 'Siz de evinize konfor ve şıklık katmak istiyorsanız, özel ölçü üretimlerimiz için WhatsApp\'tan hemen fiyat alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-dikmece-toki-1.jpg',
+            fotolar: [
+                'images/teslimat-dikmece-toki-1.jpg',
+                'images/teslimat-dikmece-toki-2.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-reyhanli-kose',
+            ilce: 'Hatay / Reyhanlı',
+            baslik: 'Özel Ölçü Geniş U-Köşe Salon Takımı',
+            aciklama: 'Siz de salonunuza şıklık ve geniş oturum katmak istiyorsanız, özel ölçü köşe takımları için WhatsApp\'tan bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-reyhanli-kose-1.jpg',
+            fotolar: [
+                'images/teslimat-reyhanli-kose-1.jpg',
+                'images/teslimat-reyhanli-kose-2.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-reyhanli-salon-yatak',
+            ilce: 'Hatay / Reyhanlı',
+            baslik: 'Antrasit Salon Takımı & LED Aynalı Yatak Odası',
+            aciklama: 'Siz de evinize şıklık katmak istiyorsanız, hayalinizdeki mobilyalar için WhatsApp\'tan kolayca bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-reyhanli-salon-1.jpg',
+            fotolar: [
+                'images/teslimat-reyhanli-salon-1.jpg',
+                'images/teslimat-reyhanli-salon-2.jpg',
+                'images/teslimat-reyhanli-yatak-1.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-antakya',
+            ilce: 'Hatay / Antakya',
+            baslik: 'Şömineli TV Konsolu & Krem Salon Takımı',
+            aciklama: 'Siz de evinize şıklık katmak istiyorsanız, özel imalat koltuk takımlarımız için WhatsApp\'tan detaylı bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-antakya-1.jpg',
+            fotolar: [
+                'images/teslimat-antakya-1.jpg'
+            ]
+        },
+        {
+            id: 'teslimat-gulderen-toki-klasik',
+            ilce: 'Hatay / Gülderen TOKİ',
+            baslik: 'Özel Ölçü Salon Koltuk Takımı & Sehpa',
+            aciklama: 'Siz de evinize şıklık ve konfor katmak istiyorsanız, atölyemizden doğrudan fiyat için WhatsApp\'tan bilgi alabilirsiniz.',
+            tarih: '24 Eylül 2026',
+            foto: 'images/teslimat-gulderen-toki-1.jpg',
+            fotolar: [
+                'images/teslimat-gulderen-toki-1.jpg',
+                'images/teslimat-gulderen-toki-2.jpg'
+            ]
+        }
     ];
-    const galeriTeslimat = [
-        // 'galeri/teslimat/teslimat1.jpg'  // <-- Fotograflari bu diziye ekleyin
+
+    // Statik varsayılan mağaza / atölye fotoğrafları
+    const varsayilanMagaza = [
+        'images/magaza-fabrika.jpg',
+        'images/atolye-milano-takim.jpg'
     ];
-    // -------------------------------------------
 
-    const display   = document.getElementById('gallery-tab-display');
-    const emptyEl   = document.getElementById('gallery-tab-empty');
-    const tabBtns   = document.querySelectorAll('.gallery-tab-btn');
-    if (!display || !tabBtns.length) return;
+    const display = document.getElementById('gallery-tab-display');
+    const emptyEl = document.getElementById('gallery-tab-empty');
+    const tabBtns = document.querySelectorAll('.gallery-tab-btn');
+    const districtFilterBar = document.getElementById('delivery-district-filter-bar');
+    const districtBtns = document.querySelectorAll('.delivery-filter-btn');
+    if (!display) return;
 
-    function renderGallery(images) {
-        display.querySelectorAll('.masonry-item').forEach(el => el.remove());
-        if (!images || !images.length) {
-            if (emptyEl) emptyEl.style.display = 'flex';
+    let aktifSekme = 'teslimat';
+    let aktifIlce = 'all';
+
+    function getDinamikTeslimatlar() {
+        try {
+            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
+            if (Array.isArray(kayitli) && kayitli.length > 0) return kayitli;
+        } catch(e) {}
+        return varsayilanTeslimat;
+    }
+
+    function getDinamikMagaza() {
+        let list = [];
+        try {
+            const atolye = JSON.parse(localStorage.getItem('kilickoltuk_atolye') || '[]');
+            if (Array.isArray(atolye) && atolye.length > 0) {
+                list = atolye.map(item => item.foto || item);
+            }
+        } catch(e) {}
+        return list.length > 0 ? list : varsayilanMagaza;
+    }
+
+    let teslimatExpanded = false;
+    const INITIAL_VISIBLE_COUNT = 6;
+
+    window.toggleTumTeslimatlar = function() {
+        teslimatExpanded = !teslimatExpanded;
+        const extraCards = display.querySelectorAll('.delivery-extra-card');
+        const btn = document.getElementById('btn-toggle-deliveries');
+        const total = display.querySelectorAll('.pinterest-card').length;
+
+        extraCards.forEach(c => {
+            if (teslimatExpanded) {
+                c.style.display = 'block';
+                setTimeout(() => { c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }, 30);
+            } else {
+                c.style.opacity = '0';
+                c.style.transform = 'translateY(15px)';
+                setTimeout(() => { c.style.display = 'none'; }, 200);
+            }
+        });
+
+        if (btn) {
+            btn.innerHTML = teslimatExpanded
+                ? '<i class="fas fa-chevron-up"></i> <span>Daha Az Göster</span>'
+                : `<i class="fas fa-chevron-down"></i> <span>Daha Fazla Teslimat Göster (${total - INITIAL_VISIBLE_COUNT} Teslimat Daha)</span>`;
+        }
+
+        if (!teslimatExpanded) {
+            const vitrinEl = document.getElementById('teslimat-vitrini');
+            if (vitrinEl) vitrinEl.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+    // Teslimat kartlarını oluştur (Pinterest Tarzı Parallax Masonry Wall - Görseldeki Tasarım)
+    function renderGallery() {
+        display.innerHTML = '';
+
+        let teslimatlar = getDinamikTeslimatlar();
+
+        if (!teslimatlar || !teslimatlar.length) {
+            if (emptyEl) {
+                emptyEl.style.display = 'flex';
+                emptyEl.innerHTML = `
+                    <i class="fas fa-truck-loading"></i>
+                    <h3>Teslimatlarımız Hazırlanıyor</h3>
+                    <p>Müşteri teslimat fotoğraflarımız hazırlanıyor.</p>
+                `;
+            }
             return;
         }
         if (emptyEl) emptyEl.style.display = 'none';
-        images.forEach((src, i) => {
-            const item = document.createElement('div');
-            item.className = 'masonry-item';
-            item.style.animationDelay = (i * 0.07) + 's';
-            item.innerHTML = `<img src="${src}" alt="Kilic Koltuk Mobilya" loading="lazy" onclick="openPhotoLightbox('${src}')">`;
-            display.appendChild(item);
+
+        // 3 Sütunlu Pinterest Parallax Konteyner
+        const wall = document.createElement('div');
+        wall.className = 'pinterest-masonry-wall';
+        wall.id = 'pinterestWall';
+
+        const col0 = document.createElement('div'); col0.className = 'pinterest-col';
+        const col1 = document.createElement('div'); col1.className = 'pinterest-col';
+        const col2 = document.createElement('div'); col2.className = 'pinterest-col';
+        const cols = [col0, col1, col2];
+
+        // Sütun ve satıra göre şaşırtmalı Pinterest yükseklikleri (Görseldeki gibi: 1. sütun kısa, 2. sütun uzun dikey, 3. sütun orta)
+        const heightMatrix = [
+            ['h-short', 'h-tall', 'h-med', 'h-tall'], // Sütun 0
+            ['h-tall', 'h-short', 'h-med', 'h-tall'],  // Sütun 1
+            ['h-med', 'h-tall', 'h-short', 'h-med']    // Sütun 2
+        ];
+
+        teslimatlar.forEach((item, i) => {
+            const photos = (Array.isArray(item.fotolar) && item.fotolar.length > 0)
+                ? item.fotolar
+                : (item.foto ? [item.foto] : (typeof item === 'string' ? [item] : []));
+
+            const kapakFoto = photos[0] || 'images/magaza-fabrika.jpg';
+            let ilce = item.ilce || 'Hatay';
+            const cleanIlce = ilce.replace(/^Hatay\s*\/\s*/i, '').trim();
+            const baslik = item.baslik || 'Özel İmalat Koltuk Takımı';
+            const count = photos.length;
+            const waText = encodeURIComponent(`Merhaba, web sitenizdeki "${cleanIlce} — ${baslik}" teslimatınızdaki mobilya takımı hakkında bilgi ve fiyat almak istiyorum.`);
+
+            const colIndex = i % 3;
+            const rowIndex = Math.floor(i / 3);
+            const hClass = heightMatrix[colIndex][rowIndex % 4];
+
+            const card = document.createElement('div');
+            card.className = `pinterest-card ${hClass}`;
+            card.setAttribute('title', `${cleanIlce} — ${baslik}`);
+
+            // 6'dan sonraki kartlar açılır/kapanır
+            if (i >= 6) {
+                card.classList.add('delivery-extra-card');
+                if (!teslimatExpanded) {
+                    card.style.display = 'none';
+                }
+            }
+
+            card.innerHTML = `
+                <div class="pinterest-img-wrap">
+                    <img class="pinterest-img" src="${kapakFoto}" alt="${cleanIlce} — ${baslik}" loading="lazy">
+                    <div class="pinterest-overlay">
+                        <div class="pinterest-info">
+                            <span class="pinterest-location"><i class="fas fa-location-dot"></i> ${cleanIlce}</span>
+                            <h4 class="pinterest-title">${baslik}</h4>
+                            <a href="https://wa.me/905386029031?text=${waText}" target="_blank" class="pinterest-price-btn" onclick="event.stopPropagation()">
+                                <span>Fiyat Sor</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                        ${count > 1 ? `<span class="pinterest-count-badge"><i class="fas fa-images"></i> ${count} Fotoğraf</span>` : ''}
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => {
+                window.openDeliveryLightbox(photos, 0, baslik, cleanIlce);
+            });
+
+            // Round-robin 3 sütuna dağıt
+            cols[colIndex].appendChild(card);
         });
+
+        cols.forEach(col => wall.appendChild(col));
+        display.appendChild(wall);
+
+        // Buton görünürlüğü ve metni güncelle
+        const toggleContainer = document.getElementById('delivery-toggle-container');
+        const toggleBtn = document.getElementById('btn-toggle-deliveries');
+        if (toggleContainer && toggleBtn) {
+            if (teslimatlar.length <= 6) {
+                toggleContainer.style.display = 'none';
+            } else {
+                toggleContainer.style.display = 'block';
+                toggleBtn.innerHTML = teslimatExpanded
+                    ? '<i class="fas fa-chevron-up"></i> <span>Daha Az Göster</span>'
+                    : `<i class="fas fa-chevron-down"></i> <span>Daha Fazla Teslimat Göster (${teslimatlar.length - 6} Teslimat Daha)</span>`;
+            }
+        }
     }
 
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderGallery(btn.dataset.galleryTab === 'magaza' ? galeriMagaza : galeriTeslimat);
+    // Parallax Scroll (Kullanıcı kaydırdıkça 3 sütun birbirinden farklı hızlarda akıcı hareket eder)
+    let isParallaxTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!isParallaxTicking) {
+            requestAnimationFrame(() => {
+                const wall = document.getElementById('pinterestWall');
+                if (wall && window.innerWidth > 950) {
+                    const rect = wall.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    if (rect.top < windowHeight && rect.bottom > 0) {
+                        const scrollDist = windowHeight - rect.top;
+                        const cols = wall.querySelectorAll('.pinterest-col');
+                        if (cols.length === 3) {
+                            // 1. Sütun: Normal hız (hafif yukarı)
+                            cols[0].style.transform = `translateY(${-(scrollDist * 0.03)}px)`;
+                            // 2. Sütun: Daha hızlı / ofsetli hareket
+                            cols[1].style.transform = `translateY(${scrollDist * 0.04}px)`;
+                            // 3. Sütun: Farklı hızda gecikmeli hareket
+                            cols[2].style.transform = `translateY(${-(scrollDist * 0.05)}px)`;
+                        }
+                    }
+                }
+                isParallaxTicking = false;
+            });
+            isParallaxTicking = true;
+        }
+    }, { passive: true });
+
+    // Firebase Firestore'dan teslimatları ve vitrini çek
+    if (window.db) {
+        window.db.collection('site_data').doc('teslimatlar').get().then(doc => {
+            if (doc.exists && doc.data() && Array.isArray(doc.data().items) && doc.data().items.length > 0) {
+                localStorage.setItem('kilickoltuk_teslimatlar_v4', JSON.stringify(doc.data().items));
+                if (aktifSekme === 'teslimat') renderGallery('teslimat');
+            }
+        }).catch(() => {});
+
+        window.db.collection('site_data').doc('atolye').get().then(doc => {
+            if (doc.exists && doc.data() && Array.isArray(doc.data().items) && doc.data().items.length > 0) {
+                localStorage.setItem('kilickoltuk_atolye', JSON.stringify(doc.data().items));
+                if (aktifSekme === 'magaza') renderGallery('magaza');
+            }
+        }).catch(() => {});
+    }
+
+    // Sunucu varsa API'den teslimatları ve vitrini taze çekip güncelle
+    if (isServer) {
+        fetch('api.php?action=get_teslimatlar')
+            .then(r => r.json())
+            .then(res => {
+                if (res.status === 'success' && Array.isArray(res.data) && res.data.length > 0) {
+                    localStorage.setItem('kilickoltuk_teslimatlar_v4', JSON.stringify(res.data));
+                    if (aktifSekme === 'teslimat') renderGallery('teslimat');
+                }
+            }).catch(() => {});
+
+        fetch('api.php?action=get_instagram')
+            .then(r => r.json())
+            .then(res => {
+                if (res.status === 'success' && Array.isArray(res.data) && res.data.length > 0) {
+                    localStorage.setItem('kilickoltuk_atolye', JSON.stringify(res.data));
+                    if (aktifSekme === 'magaza') renderGallery('magaza');
+                }
+            }).catch(() => {});
+    }
+
+    // Başlangıç: Teslimatlar sekmesini yükle
+    renderGallery('teslimat');
+
+    // ============================================================
+    // GELİŞMİŞ TESLİMAT ALBÜMÜ LIGHTBOX (TAM EKRAN SLIDER & GALERİ)
+    // ============================================================
+    window.openDeliveryLightbox = function(photos, startIndex, title, location) {
+        if (!Array.isArray(photos) || photos.length === 0) return;
+        let currentIndex = (typeof startIndex === 'number' && startIndex >= 0 && startIndex < photos.length) ? startIndex : 0;
+        const total = photos.length;
+
+        // Mevcut açık lightbox varsa kaldır
+        const existing = document.getElementById('delivery-lightbox-modal');
+        if (existing) existing.remove();
+
+        const cleanLoc = (location || 'Hatay').replace(/^Hatay\s*\/\s*/i, '').trim();
+        const displayTitle = title || 'Kılıç Koltuk Müşteri Teslimatı';
+        const waText = encodeURIComponent(`Merhaba, web sitenizdeki "${cleanLoc} — ${displayTitle}" teslimatınızdaki mobilya takımı hakkında bilgi ve fiyat almak istiyorum.`);
+
+        const overlay = document.createElement('div');
+        overlay.id = 'delivery-lightbox-modal';
+        overlay.className = 'delivery-lightbox-overlay';
+
+        overlay.innerHTML = `
+            <div class="delivery-lightbox-header">
+                <div class="delivery-lightbox-info">
+                    <div class="delivery-lightbox-title">${displayTitle}</div>
+                    <div class="delivery-lightbox-meta">
+                        <span><i class="fas fa-location-dot" style="color: #f43f5e;"></i> ${cleanLoc}</span>
+                        <span id="lb-counter" style="color: rgba(255,255,255,0.7);"><i class="fas fa-camera"></i> Fotoğraf ${currentIndex + 1} / ${total}</span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <a href="https://wa.me/905386029031?text=${waText}" target="_blank" class="delivery-lightbox-wa-btn" title="WhatsApp Teklif Al">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp Teklif Al</span>
+                    </a>
+                    <div class="delivery-lightbox-close" title="Kapat (ESC)"><i class="fas fa-times"></i></div>
+                </div>
+            </div>
+            <div class="delivery-lightbox-body">
+                ${total > 1 ? `<div class="delivery-lightbox-nav delivery-lightbox-prev" title="Önceki Fotoğraf (←)"><i class="fas fa-chevron-left"></i></div>` : ''}
+                <img id="lb-main-image" class="delivery-lightbox-main-img" src="${photos[currentIndex]}" alt="${title}">
+                ${total > 1 ? `<div class="delivery-lightbox-nav delivery-lightbox-next" title="Sonraki Fotoğraf (→)"><i class="fas fa-chevron-right"></i></div>` : ''}
+            </div>
+            ${total > 1 ? `
+            <div class="delivery-lightbox-footer">
+                <div class="delivery-lightbox-thumbs">
+                    ${photos.map((src, idx) => `
+                        <div class="delivery-lightbox-thumb ${idx === currentIndex ? 'active' : ''}" data-idx="${idx}">
+                            <img src="${src}" alt="Önizleme ${idx + 1}">
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+        `;
+
+        document.body.appendChild(overlay);
+        document.body.style.overflow = 'hidden';
+
+        const mainImg = overlay.querySelector('#lb-main-image');
+        const counter = overlay.querySelector('#lb-counter');
+        const thumbEls = overlay.querySelectorAll('.delivery-lightbox-thumb');
+        const prevBtn = overlay.querySelector('.delivery-lightbox-prev');
+        const nextBtn = overlay.querySelector('.delivery-lightbox-next');
+        const closeBtn = overlay.querySelector('.delivery-lightbox-close');
+
+        function updateImage(newIdx) {
+            currentIndex = (newIdx + total) % total;
+            if (mainImg) {
+                mainImg.style.opacity = '0.3';
+                mainImg.style.transform = 'scale(0.97)';
+                setTimeout(() => {
+                    mainImg.src = photos[currentIndex];
+                    mainImg.style.opacity = '1';
+                    mainImg.style.transform = 'scale(1)';
+                }, 120);
+            }
+            if (counter) {
+                counter.innerHTML = `<i class="fas fa-camera"></i> Fotoğraf ${currentIndex + 1} / ${total}`;
+            }
+            thumbEls.forEach((th, idx) => {
+                th.classList.toggle('active', idx === currentIndex);
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateImage(currentIndex - 1);
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                updateImage(currentIndex + 1);
+            });
+        }
+
+        thumbEls.forEach(th => {
+            th.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(th.dataset.idx, 10);
+                updateImage(idx);
+            });
         });
-    });
 
-    renderGallery(galeriMagaza); // Baslangicta magaza sekmesi
+        function closeModal() {
+            document.removeEventListener('keydown', handleKeyDown);
+            overlay.remove();
+            document.body.style.overflow = '';
+        }
 
-    // Basit lightbox
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay || e.target.classList.contains('delivery-lightbox-body')) {
+                closeModal();
+            }
+        });
+
+        // Klavye kontrolü
+        function handleKeyDown(e) {
+            if (e.key === 'Escape') closeModal();
+            if (e.key === 'ArrowLeft' && total > 1) updateImage(currentIndex - 1);
+            if (e.key === 'ArrowRight' && total > 1) updateImage(currentIndex + 1);
+        }
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Dokunmatik kaydırma (Swipe)
+        let touchStartX = 0;
+        let touchEndX = 0;
+        overlay.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        overlay.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50 && total > 1) {
+                updateImage(currentIndex + 1); // sola kaydırdı -> sonraki
+            } else if (touchEndX - touchStartX > 50 && total > 1) {
+                updateImage(currentIndex - 1); // sağa kaydırdı -> önceki
+            }
+        }, { passive: true });
+    };
+
+    // Geriye dönük uyumluluk için tekil lightbox
     window.openPhotoLightbox = function(src) {
-        const lb = document.createElement('div');
-        lb.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:99999;display:flex;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn 0.2s ease';
-        lb.innerHTML = `<img src="${src}" style="max-width:92vw;max-height:90vh;border-radius:14px;box-shadow:0 20px 80px rgba(0,0,0,0.8);">`;
-        lb.addEventListener('click', () => lb.remove());
-        document.body.appendChild(lb);
+        window.openDeliveryLightbox([src], 0, 'Kılıç Koltuk Mobilya', 'Hatay');
     };
 })();
+
+// ============================================
+// CANLI ÇALIŞMA SAATLERİ KONTROLÜ (09:00 - 18:00 | Pazar Kapalı)
+// ============================================
+(function() {
+    function guncelleCalismaDurumu() {
+        const statusPill = document.getElementById('live-store-status');
+        const statusText = document.getElementById('live-store-text');
+        if (!statusPill || !statusText) return;
+
+        // Türkiye yerel saati
+        const now = new Date();
+        const gun = now.getDay(); // 0 = Pazar, 1 = Pzt, ..., 6 = Cmt
+        const saat = now.getHours();
+        const dakika = now.getMinutes();
+        const toplamDakika = saat * 60 + dakika;
+
+        const acilisDakika = 9 * 60;   // 09:00
+        const kapanisDakika = 18 * 60; // 18:00
+
+        if (gun === 0) {
+            // Pazar günü kapalı
+            statusPill.className = 'live-status-pill closed';
+            statusText.textContent = 'ŞU AN KAPALI (Pazar)';
+        } else if (toplamDakika >= acilisDakika && toplamDakika < kapanisDakika) {
+            // Pazartesi - Cumartesi 09:00 - 18:00 arası açık
+            statusPill.className = 'live-status-pill open';
+            statusText.textContent = 'ŞU AN AÇIK (18:00\'e Kadar)';
+        } else if (toplamDakika < acilisDakika) {
+            statusPill.className = 'live-status-pill closed';
+            statusText.textContent = 'ŞU AN KAPALI (09:00\'da Açılacak)';
+        } else {
+            const yarinMetin = gun === 6 ? 'Pazartesi 09:00' : 'Yarın 09:00';
+            statusPill.className = 'live-status-pill closed';
+            statusText.textContent = `ŞU AN KAPALI (${yarinMetin})`;
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', guncelleCalismaDurumu);
+    } else {
+        guncelleCalismaDurumu();
+    }
+
+    // Her 2 dakikada bir durumu kontrol et
+    setInterval(guncelleCalismaDurumu, 120000);
+})();
+
+// ============================================
+// Çift Dil Desteği (TR | EN Multi-Language System)
+// ============================================
+(function initLanguageSystem() {
+    const translations = {
+        tr: {
+            navHome: "Ana Sayfa",
+            navLiving: "Oturma Odası",
+            navBedroom: "Yatak Odası",
+            navDining: "Yemek Odası",
+            navDeliveries: "Teslimatlar",
+            navAbout: "Hakkımızda",
+            navContact: "İletişim",
+            heroTag1: "2004'TEN BERİ • ÖZEL ÖLÇÜ İMALAT",
+            heroTitle1: "Her detayı huzur, her çizgisi konfor için tasarlandı.",
+            heroBtn1: "Koleksiyonu İncele",
+            heroTag2: "LÜKS BAZA • SİLİNEBİLİR BAŞLIK",
+            heroTitle2: "Rüyalarınıza layık, usta ellerden çıkan benzersiz dokunuş.",
+            heroBtn2: "Yatak Odasını Keşfet",
+            heroTag3: "DOĞAL AHŞAP • ÖMÜRLÜK MEKANİZMALAR",
+            heroTitle3: "Ailenizle en güzel anılara eşlik edecek lüks sofralar.",
+            heroBtn3: "Yemek Odasını İncele",
+            directionsBtn: "Canlı Yol Tarifi Al",
+            viewMoreDeliveries: "Daha Fazla Teslimat Göster",
+            collapseDeliveries: "Daha Az Göster"
+        },
+        en: {
+            navHome: "Home",
+            navLiving: "Living Room",
+            navBedroom: "Bedroom",
+            navDining: "Dining Room",
+            navDeliveries: "Deliveries",
+            navAbout: "About Us",
+            navContact: "Contact",
+            heroTag1: "SINCE 2004 • BESPOKE CRAFTSMANSHIP",
+            heroTitle1: "Crafted for serenity in every detail, comfort in every contour.",
+            heroBtn1: "Explore Collection",
+            heroTag2: "LUXURY BASES • BESPOKE HEADBOARDS",
+            heroTitle2: "Unmatched elegance shaped by master craftsmen for peaceful dreams.",
+            heroBtn2: "Discover Bedrooms",
+            heroTag3: "SOLID WOOD • TIMELESS MECHANISMS",
+            heroTitle3: "Prestigious dining collections tailored for memorable moments.",
+            heroBtn3: "Discover Dining",
+            directionsBtn: "Get Live Directions",
+            viewMoreDeliveries: "Show More Deliveries",
+            collapseDeliveries: "Show Less"
+        }
+    };
+
+    function setLanguage(lang) {
+        if (!translations[lang]) lang = 'tr';
+        localStorage.setItem('kilic_mobilya_lang', lang);
+        document.documentElement.lang = lang;
+
+        // Buton aktiflik sınıfları
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            if (btn.dataset.lang === lang) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        const t = translations[lang];
+
+        // Navbar linkleri
+        const linkMap = {
+            '#home': t.navHome,
+            '#oturma-odasi': t.navLiving,
+            '#yatak-odasi': t.navBedroom,
+            '#yemek-odasi': t.navDining,
+            '#teslimat-vitrini': t.navDeliveries,
+            '#hakkimizda': t.navAbout,
+            '#iletisim': t.navContact
+        };
+
+        document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+            const href = link.getAttribute('href');
+            if (linkMap[href]) {
+                link.textContent = linkMap[href];
+            }
+        });
+
+        // Hero slayt içerikleri
+        const slides = document.querySelectorAll('.hero-slide');
+        if (slides[0]) {
+            const tag = slides[0].querySelector('.hero-editorial-tag');
+            const title = slides[0].querySelector('.hero-editorial-title');
+            const btnSpan = slides[0].querySelector('.hero-editorial-btn span');
+            if (tag) tag.textContent = t.heroTag1;
+            if (title) title.textContent = t.heroTitle1;
+            if (btnSpan) btnSpan.textContent = t.heroBtn1;
+        }
+        if (slides[1]) {
+            const tag = slides[1].querySelector('.hero-editorial-tag');
+            const title = slides[1].querySelector('.hero-editorial-title');
+            const btnSpan = slides[1].querySelector('.hero-editorial-btn span');
+            if (tag) tag.textContent = t.heroTag2;
+            if (title) title.textContent = t.heroTitle2;
+            if (btnSpan) btnSpan.textContent = t.heroBtn2;
+        }
+        if (slides[2]) {
+            const tag = slides[2].querySelector('.hero-editorial-tag');
+            const title = slides[2].querySelector('.hero-editorial-title');
+            const btnSpan = slides[2].querySelector('.hero-editorial-btn span');
+            if (tag) tag.textContent = t.heroTag3;
+            if (title) title.textContent = t.heroTitle3;
+            if (btnSpan) btnSpan.textContent = t.heroBtn3;
+        }
+
+        // Canlı Yol Tarifi Butonu
+        const mapsBtnSpan = document.querySelector('.live-maps-btn span');
+        if (mapsBtnSpan) {
+            mapsBtnSpan.textContent = t.directionsBtn;
+        }
+    }
+
+    // Event listener tanımla
+    document.addEventListener('click', (e) => {
+        const langBtn = e.target.closest('.lang-btn');
+        if (!langBtn) return;
+        const selectedLang = langBtn.dataset.lang;
+        if (selectedLang) {
+            setLanguage(selectedLang);
+        }
+    });
+
+    // Sayfa açılışında kayıtlı dili veya varsayılan Türkçe'yi yükle
+    const savedLang = localStorage.getItem('kilic_mobilya_lang') || 'tr';
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setLanguage(savedLang));
+    } else {
+        setLanguage(savedLang);
+    }
+})();
+
+// ============================================
+// 3D ARC / KAVİSLİ SİLİNDİR CAROUSEL (COVERFLOW)
+// ============================================
+(function initArcCoverflowSystem() {
+    function setupArc() {
+        const stage = document.getElementById('arcStage');
+        const track = document.getElementById('arcTrack');
+        const cards = Array.from(document.querySelectorAll('.arc-card'));
+        const dots = Array.from(document.querySelectorAll('.arc-dot'));
+        const prevBtn = document.getElementById('arcPrevBtn');
+        const nextBtn = document.getElementById('arcNextBtn');
+
+        if (!stage || !track || cards.length === 0) return;
+
+        let currentIndex = 0;
+        const totalCards = cards.length;
+
+        function updateArc() {
+            const isMobile = window.innerWidth <= 768;
+            const xStep1 = isMobile ? 150 : 250;
+            const xStep2 = isMobile ? 260 : 420;
+            const zStep1 = isMobile ? -50 : -60;
+            const zStep2 = isMobile ? -130 : -160;
+            const rotStep1 = isMobile ? 18 : 25;
+            const rotStep2 = isMobile ? 28 : 36;
+
+            cards.forEach((card, idx) => {
+                let diff = idx - currentIndex;
+                // Dairesel döngü için wrap-around
+                if (diff > totalCards / 2) diff -= totalCards;
+                if (diff < -totalCards / 2) diff += totalCards;
+
+                card.classList.remove('active-card');
+                card.style.display = 'block';
+
+                if (diff === 0) {
+                    // Merkez Aktif Kart
+                    card.classList.add('active-card');
+                    card.style.transform = `translateX(0px) translateZ(85px) rotateY(0deg) scale(1.06)`;
+                    card.style.zIndex = '10';
+                    card.style.opacity = '1';
+                    card.style.filter = 'none';
+                    card.style.pointerEvents = 'auto';
+                } else if (diff === 1) {
+                    // Sağ 1
+                    card.style.transform = `translateX(${xStep1}px) translateZ(${zStep1}px) rotateY(-${rotStep1}deg) scale(0.89)`;
+                    card.style.zIndex = '6';
+                    card.style.opacity = '0.75';
+                    card.style.filter = 'brightness(0.72) blur(0.4px)';
+                    card.style.pointerEvents = 'auto';
+                } else if (diff === -1) {
+                    // Sol 1
+                    card.style.transform = `translateX(-${xStep1}px) translateZ(${zStep1}px) rotateY(${rotStep1}deg) scale(0.89)`;
+                    card.style.zIndex = '6';
+                    card.style.opacity = '0.75';
+                    card.style.filter = 'brightness(0.72) blur(0.4px)';
+                    card.style.pointerEvents = 'auto';
+                } else if (diff === 2) {
+                    // Sağ 2
+                    card.style.transform = `translateX(${xStep2}px) translateZ(${zStep2}px) rotateY(-${rotStep2}deg) scale(0.76)`;
+                    card.style.zIndex = '3';
+                    card.style.opacity = '0.4';
+                    card.style.filter = 'brightness(0.5) blur(1.2px)';
+                    card.style.pointerEvents = 'auto';
+                } else if (diff === -2) {
+                    // Sol 2
+                    card.style.transform = `translateX(-${xStep2}px) translateZ(${zStep2}px) rotateY(${rotStep2}deg) scale(0.76)`;
+                    card.style.zIndex = '3';
+                    card.style.opacity = '0.4';
+                    card.style.filter = 'brightness(0.5) blur(1.2px)';
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    // Gizli kartlar
+                    card.style.transform = `translateX(0px) translateZ(-250px) scale(0.5)`;
+                    card.style.zIndex = '1';
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                }
+            });
+
+            // Alt indikatör noktalarını güncelle
+            dots.forEach((dot, dIdx) => {
+                dot.classList.toggle('active', dIdx === currentIndex);
+            });
+
+            // Dinamik WhatsApp CTA güncelle
+            const activeCard = cards[currentIndex];
+            const waBtn = document.getElementById('arcWhatsAppCta');
+            const waLabel = document.getElementById('arcWaCtaLabel');
+            if (waBtn && waLabel && activeCard) {
+                const msg = activeCard.getAttribute('data-wa-msg') || '';
+                const label = activeCard.getAttribute('data-wa-label') || 'WhatsApp\'tan Bilgi Al';
+                waBtn.href = `https://wa.me/905386029031?text=${msg}`;
+                waLabel.textContent = label;
+            }
+        }
+
+        function goTo(idx) {
+            currentIndex = (idx + totalCards) % totalCards;
+            updateArc();
+        }
+
+        function next() { goTo(currentIndex + 1); }
+        function prev() { goTo(currentIndex - 1); }
+
+        if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); next(); });
+        if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); prev(); });
+
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => goTo(idx));
+        });
+
+        cards.forEach((card, idx) => {
+            card.addEventListener('click', (e) => {
+                if (currentIndex !== idx) {
+                    e.preventDefault();
+                    goTo(idx);
+                }
+            });
+        });
+
+        // Mobil Dokunmatik Kaydırma (Touch Swipe)
+        let touchStartX = 0;
+        let touchEndX = 0;
+        stage.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        }, { passive: true });
+
+        stage.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].clientX;
+            const diffX = touchStartX - touchEndX;
+            if (Math.abs(diffX) > 40) {
+                if (diffX > 0) next();
+                else prev();
+            }
+        }, { passive: true });
+
+        // Masaüstü Mouse Drag
+        let isMouseDown = false;
+        let mouseStartX = 0;
+
+        stage.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button')) return;
+            isMouseDown = true;
+            mouseStartX = e.clientX;
+        });
+
+        window.addEventListener('mouseup', (e) => {
+            if (!isMouseDown) return;
+            isMouseDown = false;
+            const diffX = mouseStartX - e.clientX;
+            if (Math.abs(diffX) > 45) {
+                if (diffX > 0) next();
+                else prev();
+            }
+        });
+
+        window.addEventListener('resize', updateArc, { passive: true });
+
+        // İlk başlatma
+        updateArc();
+    }
+
+    // Koleksiyonu İncele butonu köprüsü
+    window.openArcCategory = function(key) {
+        const titles = {
+            'koltuk-takimi': 'Koltuk Takımları',
+            'kose-takimi': 'Köşe Takımları',
+            'yatak-odasi-koleksiyonu': 'Yatak Odası Koleksiyonu',
+            'cift-kisilik-yatak': 'Çift Kişilik Yatak & Baza',
+            'yemek-masasi': 'Yemek Masaları & Sandalyeler',
+            'tv-unitesi': 'TV Üniteleri'
+        };
+
+        const title = titles[key] || 'Ürün Koleksiyonu';
+
+        // Mevcut kategori overlay'ini aç
+        const overlay = document.getElementById('kategori-sayfasi');
+        const baslikEl = document.getElementById('kat-baslik');
+        if (overlay && baslikEl && typeof window.katSayfasiAc === 'function') {
+            window.katSayfasiAc(key, title);
+        } else {
+            // İlgili kategori bölümüne yumuşak kaydır
+            const targetSectionMap = {
+                'koltuk-takimi': '#oturma-odasi',
+                'kose-takimi': '#oturma-odasi',
+                'yatak-odasi-koleksiyonu': '#yatak-odasi',
+                'cift-kisilik-yatak': '#yatak-odasi',
+                'yemek-masasi': '#yemek-odasi',
+                'tv-unitesi': '#oturma-odasi'
+            };
+            const targetEl = document.querySelector(targetSectionMap[key] || '#oturma-odasi');
+            if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    const tile = targetEl.querySelector(`[data-gallery="${key}"]`);
+                    if (tile) tile.click();
+                }, 400);
+            }
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupArc);
+    } else {
+        setupArc();
+    }
+})();
+
+
+

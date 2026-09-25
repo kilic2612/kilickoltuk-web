@@ -17,6 +17,9 @@ $reviewsFile = __DIR__ . '/reviews.json';
 $instagramFile = __DIR__ . '/instagram.json';
 $messagesFile = __DIR__ . '/messages.json';
 $productsFile = __DIR__ . '/products.json';
+$teslimatFile = __DIR__ . '/teslimat.json';
+
+$defaultTeslimatlar = [];
 
 // Varsayılan Ürünler Flat-File Veritabanı
 $defaultProducts = [
@@ -51,22 +54,22 @@ $defaultReviews = [
 // Varsayılan Instagram/Atölye Görselleri (Eğer dosya yoksa otomatik oluşturulur)
 $defaultInstagram = [
     [
-        "foto" => "milano-koltuk-takimi.jpg",
+        "foto" => "images/milano-koltuk-takimi.jpg",
         "likes" => 284,
         "comments" => 24
     ],
     [
-        "foto" => "atolye-milano-takim.jpg",
+        "foto" => "images/atolye-milano-takim.jpg",
         "likes" => 195,
         "comments" => 18
     ],
     [
-        "foto" => "milano-uclu-krem.jpg",
+        "foto" => "images/milano-uclu-krem.jpg",
         "likes" => 230,
         "comments" => 15
     ],
     [
-        "foto" => "koltuk-kapak.jpg",
+        "foto" => "images/koltuk-kapak.jpg",
         "likes" => 142,
         "comments" => 12
     ]
@@ -360,6 +363,86 @@ switch ($action) {
             echo json_encode(["status" => "success", "message" => "Ürün kalıcı olarak silindi."]);
         } else {
             echo json_encode(["status" => "error", "message" => "Geçersiz kategori veya ürün index değeri."]);
+        }
+        break;
+
+    // ----------------------------------------------------
+    // 🚚 TESLİMAT YÖNETİMİ ENDPOINTS (YAPILAN İŞLER)
+    // ----------------------------------------------------
+    case 'get_teslimatlar':
+        $teslimatlar = readJsonFile($teslimatFile, $defaultTeslimatlar);
+        echo json_encode(["status" => "success", "data" => $teslimatlar]);
+        break;
+
+    case 'add_teslimat':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(["status" => "error", "message" => "POST method required"]);
+            break;
+        }
+
+        $ilce = isset($input['ilce']) ? strip_tags(trim($input['ilce'])) : 'Hatay';
+        $baslik = isset($input['baslik']) ? strip_tags(trim($input['baslik'])) : '';
+        $aciklama = isset($input['aciklama']) ? strip_tags(trim($input['aciklama'])) : '';
+        $foto = isset($input['foto']) ? $input['foto'] : '';
+
+        if (empty($foto)) {
+            echo json_encode(["status" => "error", "message" => "Teslimat fotoğrafı zorunludur."]);
+            break;
+        }
+
+        // Base64 fotoğrafı uploads/ klasörüne gerçek dosya olarak kaydet
+        $fotoYolu = $foto;
+        if (strpos($foto, 'data:image') === 0) {
+            $uploadsDir = __DIR__ . '/uploads';
+            if (!file_exists($uploadsDir)) {
+                @mkdir($uploadsDir, 0777, true);
+            }
+            $ext = 'jpg';
+            if (strpos($foto, 'data:image/png') === 0) $ext = 'png';
+            elseif (strpos($foto, 'data:image/webp') === 0) $ext = 'webp';
+
+            $cleanBase64 = preg_replace('#^data:image/\w+;base64,#i', '', $foto);
+            $imgData = base64_decode($cleanBase64);
+            if ($imgData !== false) {
+                $safeName = 'teslimat_' . time() . '_' . rand(100, 999) . '.' . $ext;
+                $targetPath = $uploadsDir . '/' . $safeName;
+                if (file_put_contents($targetPath, $imgData)) {
+                    $fotoYolu = 'uploads/' . $safeName;
+                }
+            }
+        }
+
+        $teslimatlar = readJsonFile($teslimatFile, $defaultTeslimatlar);
+        $newTeslimat = [
+            "id" => "teslimat-" . time() . "-" . rand(100, 999),
+            "ilce" => $ilce,
+            "baslik" => $baslik ?: "Özel Ölçü Teslimat",
+            "aciklama" => $aciklama,
+            "foto" => $fotoYolu,
+            "tarih" => date('Y-m-d H:i:s')
+        ];
+
+        array_unshift($teslimatlar, $newTeslimat);
+        writeJsonFile($teslimatFile, $teslimatlar);
+
+        echo json_encode(["status" => "success", "message" => "Teslimat başarıyla eklendi!", "data" => $newTeslimat]);
+        break;
+
+    case 'delete_teslimat':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(["status" => "error", "message" => "POST method required"]);
+            break;
+        }
+
+        $index = isset($input['index']) ? intval($input['index']) : -1;
+        $teslimatlar = readJsonFile($teslimatFile, $defaultTeslimatlar);
+
+        if ($index >= 0 && $index < count($teslimatlar)) {
+            array_splice($teslimatlar, $index, 1);
+            writeJsonFile($teslimatFile, $teslimatlar);
+            echo json_encode(["status" => "success", "message" => "Teslimat silindi."]);
+        } else {
+            echo json_encode(["status" => "error", "message" => "Geçersiz index değeri."]);
         }
         break;
 

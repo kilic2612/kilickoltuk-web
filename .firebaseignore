@@ -1,0 +1,22 @@
+# Executable files (not allowed on Spark plan)
+*.bat
+*.exe
+*.sh
+*.cmd
+*.ps1
+
+# Development files
+.git
+.gitignore
+.vscode
+.firebase
+node_modules
+
+# Markdown docs
+*.md
+
+# PHP files (not needed for static hosting)
+*.php
+
+# Firebase config files (not needed in deploy)
+firestore.rules

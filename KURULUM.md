@@ -28,12 +28,30 @@ Tebrikler! Web siteniz ve yönetim paneliniz **sunucuya, kuruluma veya veritaban
    - Tıpkı bir mobil bankacılık veya Instagram uygulaması gibi tek dokunuşla açılır ve şifrenizle sadece siz erişebilirsiniz.
 3. **Şifre Değiştirme:**
    - Panel içerisindeki **"Güvenlik & PWA Kurulum"** sekmesinden `1234` varsayılan şifrenizi istediğiniz yeni bir şifreyle değiştirebilirsiniz.
-4. **Vitrin & Yorum Yönetimi:**
-   - Atölye fotoğraflarını yönetebilir, web sitesinden gelen müşteri yorumlarını inceleyip silebilirsiniz.
+4. **Gelen Müşteri Mesajları:**
+   - Web sitesindeki formdan gönderilen tüm mesajlar anında **"Gelen Mesajlar"** sekmesine düşer. Tek tıkla müşteriye WhatsApp'tan yazabilir veya telefonla arayabilirsiniz.
+5. **Vitrin & Atölye Yönetimi:**
+   - Atölye ve mağaza vitrin fotoğraflarını yönetebilir, yeni teslimatları ekleyebilirsiniz.
 
 ---
 
-## 🎨 3. Marka ve Kurumsal Bilgiler (2004'ten Beri / 22 Yıllık Deneyim)
+## 🌐 4. Alan Adı (Domain) ve Yayınlama Rehberi
+
+Siteniz için **hosting satın almanıza gerek yoktur**, Google Firebase altyapısı sayesinde **ücretsiz** ve **yüksek hızlı** olarak barındırılır.
+
+### Alan Adını Firebase'e Bağlama:
+1. Alan adınızı (örn: `kilickoltukmobilya.com`) herhangi bir domain firmasından (Natro, Turhost, İsimtescil, Cloudflare vb.) satın alın.
+2. [Firebase Console](https://console.firebase.google.com/) adresine girin -> **kilic-koltuk** projenizi seçin.
+3. Soldaki menüden **Hosting** sekmesine tıklayın -> **"Özel Alan Adı Ekle" (Add Custom Domain)** butonuna basın.
+4. Satın aldığınız alan adını yazın. Firebase'in size vereceği 2 adet DNS kaydını (A kaydı IP adresleri) domaini aldığınız firmanın DNS yönetimine ekleyin.
+5. 15-30 dakika içinde siteniz alan adınızla yayına girer ve SSL sertifikası (güvenli yeşil kilit `https://`) Google tarafından otomatik olarak tanımlanır.
+
+### Siteyi Yayına Yüklemek İçin:
+* Klasördeki **`YAYINLA.bat`** dosyasına çift tıklamanız yeterlidir. Tüm site Google Firebase sunucularına otomatik olarak yüklenir.
+
+---
+
+## 🎨 5. Marka ve Kurumsal Bilgiler (2004'ten Beri / 22 Yıllık Deneyim)
 * **Kuruluş:** 2004 yılından günümüze **22 yıllık** köklü zanaat ve imalat tecrübesi.
 * **Teslimat Ayrıcalığı:** **Hatay içi tüm evlere ücretsiz teslimat, kata çıkarma ve uzman montaj**.
 * **Ürün:** Milano Curved Buklet Koltuk Takımı & Özel İmalat Koleksiyonu
@@ -42,3 +60,4 @@ Tebrikler! Web siteniz ve yönetim paneliniz **sunucuya, kuruluma veya veritaban
   - 35 DNS HR Çökme Yapmaz VIP Sünger
   - İthal Silinebilir Buklet Kumaş
   - Hatay İçi Ücretsiz Kurulum & Güvenli Teslimat
+

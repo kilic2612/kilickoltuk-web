@@ -481,6 +481,58 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ── GELEN MESAJLAR STİLLERİ ── */
+.mesaj-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  transition: all 0.25s ease;
+  margin-bottom: 1rem;
+}
+.mesaj-card.yeni {
+  border-left: 4px solid var(--gold-primary);
+  background: rgba(212,175,55,0.05);
+}
+.mesaj-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.mesaj-gonderen {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.mesaj-tarih {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+.mesaj-icerik {
+  background: rgba(0,0,0,0.3);
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.mesaj-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.3rem;
+}
+
 /* ── MOBİL UYUMLULUK (RESPONSIVE) ── */
 @media(max-width: 900px) {
   .panel-grid { grid-template-columns: 1fr; }
@@ -492,7 +544,7 @@ body {
   .header-brand span { display: none; }
   .nav-tabs-bar { padding: 0 1rem; }
   .tab-view { padding: 0 1rem; }
-  .stats-container { padding: 0 1rem; }
+  .stats-container { padding: 0 1rem; grid-template-columns: 1fr 1fr; }
 }
 </style>
 </head>
@@ -544,14 +596,22 @@ body {
     </div>
     <div class="stat-card">
       <div class="stat-info">
-        <h3>Vitrin Görselleri</h3>
-        <div class="num" id="stat-vitrin-sayisi">0</div>
+        <h3>Teslimatlarımız</h3>
+        <div class="num" id="stat-teslimat-sayisi">0</div>
       </div>
-      <div class="stat-icon"><i class="fas fa-camera"></i></div>
+      <div class="stat-icon" style="color:#f59e0b; background:rgba(245,158,11,0.1);"><i class="fas fa-truck"></i></div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;" onclick="tabDegistir('mesajlar')">
+      <div class="stat-info">
+        <h3>Gelen Mesajlar</h3>
+        <div class="num" id="stat-mesaj-sayisi" style="color:#38bdf8;">0</div>
+      </div>
+      <div class="stat-icon" style="color:#38bdf8; background:rgba(56,189,248,0.1);"><i class="fas fa-envelope"></i></div>
+    </div>
     <div class="stat-card">
       <div class="stat-info">
-        <h3>Güvenli Depolama</h3>
-        <div class="num" style="font-size:1.1rem; color:#10b981; margin-top:0.4rem;"><i class="fas fa-shield-alt"></i> Kalıcı Aktif</div>
+        <h3>Bulut Depolama</h3>
+        <div class="num" style="font-size:1.1rem; color:#10b981; margin-top:0.4rem;"><i class="fas fa-cloud-check"></i> Firebase Aktif</div>
       </div>
       <div class="stat-icon" style="color:#10b981; background:rgba(16,185,129,0.1);"><i class="fas fa-database"></i></div>
     </div>
@@ -562,8 +622,11 @@ body {
     <button class="tab-nav-btn aktif" id="btn-tab-urunler" onclick="tabDegistir('urunler')">
       <i class="fas fa-couch"></i> Ürün Yönetimi
     </button>
-    <button class="tab-nav-btn" id="btn-tab-atolye" onclick="tabDegistir('atolye')">
-      <i class="fas fa-camera"></i> Atölye & Vitrin
+    <button class="tab-nav-btn" id="btn-tab-teslimat" onclick="tabDegistir('teslimat')">
+      <i class="fas fa-truck"></i> Teslimat Yönetimi
+    </button>
+    <button class="tab-nav-btn" id="btn-tab-mesajlar" onclick="tabDegistir('mesajlar')">
+      <i class="fas fa-envelope"></i> Gelen Mesajlar <span id="nav-mesaj-badge" style="background:#e11d48; color:#fff; font-size:0.72rem; padding:2px 6px; border-radius:10px; margin-left:4px; display:none;">0</span>
     </button>
     <button class="tab-nav-btn" id="btn-tab-ayarlar" onclick="tabDegistir('ayarlar')">
       <i class="fas fa-cog"></i> Güvenlik & PWA Kurulum
@@ -666,46 +729,70 @@ body {
   </main>
 
   <!-- ============================================ -->
-  <!-- SEKME 2: ATÖLYE & VİTRİN GÖRSELLERİ -->
+  <!-- SEKME: TESLİMAT YÖNETİMİ (YAPILAN İŞLER) -->
   <!-- ============================================ -->
-  <section id="tab-atolye" class="tab-view">
+  <section id="tab-teslimat" class="tab-view">
     <div class="panel-grid">
       <div class="card-box">
-        <h2><i class="fas fa-camera"></i> Vitrine Yeni Fotoğraf Ekle</h2>
+        <h2><i class="fas fa-truck"></i> Yeni Teslimat Ekle</h2>
 
         <div class="form-grup">
-          <label><i class="fas fa-image"></i> Fotoğraf Seç</label>
+          <label><i class="fas fa-map-marker-alt"></i> Teslimat İlçesi (Hatay)</label>
+          <select class="form-select" id="teslimat-ilce">
+            <option value="Hatay / Gülderen TOKİ">📍 Gülderen TOKİ</option>
+            <option value="Hatay / Dikmece TOKİ">📍 Dikmece TOKİ</option>
+            <option value="Hatay / Kırıkhan TOKİ">📍 Kırıkhan TOKİ</option>
+            <option value="Hatay / Samandağ">📍 Samandağ</option>
+            <option value="Hatay / İskenderun">📍 İskenderun</option>
+            <option value="Hatay / Reyhanlı">📍 Reyhanlı</option>
+            <option value="Hatay / Altınözü">📍 Altınözü</option>
+            <option value="Hatay / Payas">📍 Payas</option>
+            <option value="Hatay / Antakya">📍 Antakya</option>
+            <option value="Hatay / Defne">📍 Defne</option>
+            <option value="Hatay / Dörtyol">📍 Dörtyol</option>
+            <option value="Hatay / Arsuz">📍 Arsuz</option>
+            <option value="Hatay / Yayladağı">📍 Yayladağı</option>
+            <option value="Hatay / Erzin">📍 Erzin</option>
+            <option value="Hatay / Belen">📍 Belen</option>
+            <option value="Hatay / Hassa">📍 Hassa</option>
+            <option value="Hatay / Kumlu">📍 Kumlu</option>
+            <option value="Hatay Geneli">📍 Hatay Geneli</option>
+          </select>
+        </div>
+
+        <div class="form-grup">
+          <label><i class="fas fa-pen"></i> Kısa Başlık (Örn: Oturma Odası & Yatak Odası)</label>
+          <input class="form-input" type="text" id="teslimat-baslik" placeholder="Örn: Oturma Odası, Yemek Odası & Yatak Odası">
+        </div>
+
+        <div class="form-grup">
+          <label><i class="fas fa-images"></i> Teslimat Fotoğrafları (Tek veya Çoklu Seçim)</label>
           <div class="foto-dropzone">
-            <input type="file" id="atolye-foto-input" accept="image/*" onchange="atolyeFotoDegisti(this)">
+            <input type="file" id="teslimat-foto-input" accept="image/*" multiple onchange="teslimatFotoDegisti(this)">
             <i class="fas fa-cloud-upload-alt"></i>
-            <p>Atölye veya teslimat fotoğrafı seçin</p>
-            <p class="dosya-adi" id="atolye-dosya-adi-goster"></p>
+            <p>Müşteri evinde çekilen fotoğrafları seçin (Birden fazla fotoğraf seçebilirsiniz)</p>
+            <p class="dosya-adi" id="teslimat-dosya-adi-goster"></p>
           </div>
-          <div class="foto-preview-box" id="atolye-preview-box">
-            <img id="atolye-foto-preview" class="foto-preview" alt="Önizleme">
+          <div class="foto-preview-box" id="teslimat-preview-box" style="display:none; padding:10px; background:rgba(0,0,0,0.3); border-radius:10px; margin-top:10px;">
+            <div id="teslimat-previews-container" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
           </div>
         </div>
 
         <div class="form-grup">
-          <label><i class="fas fa-heart"></i> Beğeni Sayısı</label>
-          <input class="form-input" type="number" id="atolye-likes" placeholder="Örn: 240">
+          <label><i class="fas fa-align-left"></i> Kısa Slogan (WhatsApp Bilgi Çağrısı)</label>
+          <textarea class="form-textarea" id="teslimat-aciklama" placeholder="Örn: Siz de evinize şıklık ve zarafet katmak istiyorsanız, özel ölçü ve model seçenekleri için WhatsApp'tan bilgi alabilirsiniz."></textarea>
         </div>
 
-        <div class="form-grup">
-          <label><i class="fas fa-comment"></i> Yorum Sayısı</label>
-          <input class="form-input" type="number" id="atolye-comments" placeholder="Örn: 18">
-        </div>
-
-        <button class="btn-primary" onclick="atolyeFotoEkle()">
-          <i class="fas fa-plus"></i> Vitrine Ekle
+        <button class="btn-primary" onclick="teslimatFotoEkle()">
+          <i class="fas fa-plus"></i> Teslimatı Siteye Ekle
         </button>
       </div>
 
       <div class="card-box">
         <div class="liste-header">
-          <h2><i class="fas fa-images"></i> Yayındaki Vitrin Fotoğrafları</h2>
+          <h2><i class="fas fa-truck-loading"></i> Sitede Yayındaki Teslimatlar</h2>
         </div>
-        <div class="cards-grid" id="atolye-listesi"></div>
+        <div class="cards-grid" id="teslimat-listesi"></div>
       </div>
     </div>
   </section>
@@ -774,10 +861,30 @@ body {
       </div>
     </div>
   </section>
+
+  <!-- ============================================ -->
+  <!-- SEKME: GELEN MESAJLAR (FIRESTORE) -->
+  <!-- ============================================ -->
+  <section id="tab-mesajlar" class="tab-view">
+    <div class="card-box" style="max-width: 960px; margin: 0 auto;">
+      <div class="liste-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px;">
+        <h2><i class="fas fa-envelope-open-text" style="color:var(--gold-primary);"></i> Web Sitesinden Gelen Müşteri Mesajları</h2>
+        <button class="btn-mini m-blue" onclick="mesajlariGetir()"><i class="fas fa-sync-alt"></i> Mesajları Yenile</button>
+      </div>
+      <div id="mesaj-listesi">
+        <div class="empty-box"><i class="fas fa-spinner fa-spin"></i><p>Mesajlar kontrol ediliyor...</p></div>
+      </div>
+    </div>
+  </section>
 </div>
 
 <!-- TOAST BİLDİRİM -->
 <div class="toast" id="toast"></div>
+
+<!-- Firebase CDN (Compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
 <script>
 // ─────────────────────────────────────────
@@ -918,16 +1025,83 @@ async function veriYaz(data) {
   try {
     localStorage.setItem('kilickoltuk_urunler', JSON.stringify(data));
   } catch(e) {}
+
+  // Firebase Firestore Bulut Senkronizasyonu
+  if (window.db) {
+    try {
+      await window.db.collection('site_data').doc('products').set(data);
+    } catch(e) {
+      console.warn('Firestore urunler senkronizasyon:', e);
+    }
+  }
   return true;
+}
+
+function laleKategoriDuzelt(targetObj) {
+  if (!targetObj || typeof targetObj !== 'object') return false;
+  let degisti = false;
+  ['yemek-masasi', 'koltuk-takimi', 'kose-takimi', 'tv-unitesi'].forEach(kat => {
+    if (Array.isArray(targetObj[kat])) {
+      const laleIdx = targetObj[kat].findIndex(u => u && u.ad && u.ad.toLowerCase().trim() === 'lale');
+      if (laleIdx !== -1) {
+        const item = targetObj[kat].splice(laleIdx, 1)[0];
+        item.kategori = 'Çift Kişilik Yatak & Baza';
+        if (!targetObj['cift-kisilik-yatak']) targetObj['cift-kisilik-yatak'] = [];
+        targetObj['cift-kisilik-yatak'].unshift(item);
+        degisti = true;
+      }
+    }
+  });
+  return degisti;
 }
 
 async function depolamayiBaslat() {
   const idbData = await idbGetProducts();
   if (idbData && typeof idbData === 'object' && Object.keys(idbData).length > 0) {
     cachedUrunler = idbData;
+    if (laleKategoriDuzelt(cachedUrunler)) {
+      veriYaz(cachedUrunler);
+    }
     listeleniGuncelle();
     istatistikleriGuncelle();
   }
+
+  // Firebase Firestore'dan ürünleri, teslimatları ve atölyeyi çek
+  if (window.db) {
+    window.db.collection('site_data').doc('products').get().then(async doc => {
+      if (doc.exists && doc.data()) {
+        cachedUrunler = Object.assign({}, cachedUrunler || {}, doc.data());
+        if (laleKategoriDuzelt(cachedUrunler)) {
+          veriYaz(cachedUrunler);
+        } else {
+          await idbSaveProducts(cachedUrunler);
+          try { localStorage.setItem('kilickoltuk_urunler', JSON.stringify(cachedUrunler)); } catch(e){}
+        }
+        listeleniGuncelle();
+        istatistikleriGuncelle();
+      }
+    }).catch(e => console.warn('Firestore urunler:', e));
+
+    window.db.collection('site_data').doc('teslimatlar').get().then(doc => {
+      if (doc.exists && doc.data() && Array.isArray(doc.data().items)) {
+        localStorage.setItem('kilickoltuk_teslimatlar', JSON.stringify(doc.data().items));
+        teslimatListesiGuncelle();
+        istatistikleriGuncelle();
+      }
+    }).catch(()=>{});
+
+    window.db.collection('site_data').doc('atolye').get().then(doc => {
+      if (doc.exists && doc.data() && Array.isArray(doc.data().items)) {
+        localStorage.setItem('kilickoltuk_atolye', JSON.stringify(doc.data().items));
+        atolyeListesiGuncelle();
+        istatistikleriGuncelle();
+      }
+    }).catch(()=>{});
+
+    // Mesaj sayacını dinle
+    mesajSayisiGuncelle();
+  }
+
   if (isServer) {
     fetch('api.php?action=get_products')
       .then(r => r.json())
@@ -939,7 +1113,31 @@ async function depolamayiBaslat() {
           istatistikleriGuncelle();
         }
       }).catch(()=>{});
+
+    fetch('api.php?action=get_teslimatlar')
+      .then(r => r.json())
+      .then(res => {
+        if (res.status === 'success' && Array.isArray(res.data)) {
+          localStorage.setItem('kilickoltuk_teslimatlar', JSON.stringify(res.data));
+          teslimatListesiGuncelle();
+          istatistikleriGuncelle();
+        }
+      }).catch(()=>{});
   }
+
+  // teslimat.json dosyasını oku ve yerel depolama ile eşitle
+  fetch('teslimat.json')
+    .then(r => r.json())
+    .then(data => {
+      if (Array.isArray(data) && data.length > 0) {
+        const local = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar') || '[]');
+        if (local.length === 0) {
+          localStorage.setItem('kilickoltuk_teslimatlar', JSON.stringify(data));
+          teslimatListesiGuncelle();
+          istatistikleriGuncelle();
+        }
+      }
+    }).catch(()=>{});
 }
 
 // ─────────────────────────────────────────
@@ -982,8 +1180,12 @@ function tabDegistir(tabName) {
 
   if (tabName === 'urunler') {
     listeleniGuncelle();
+  } else if (tabName === 'teslimat') {
+    teslimatListesiGuncelle();
   } else if (tabName === 'atolye') {
     atolyeListesiGuncelle();
+  } else if (tabName === 'mesajlar') {
+    mesajlariGetir();
   }
 }
 
@@ -1019,8 +1221,8 @@ function panelBaslat() {
   ).join('');
 
   listeleniGuncelle();
+  teslimatListesiGuncelle();
   atolyeListesiGuncelle();
-  yorumListesiGuncelle();
   istatistikleriGuncelle();
 }
 
@@ -1045,7 +1247,11 @@ function istatistikleriGuncelle() {
   document.getElementById('m-urun-sayisi').textContent = toplamUrun;
 
   const atolyeList = JSON.parse(localStorage.getItem('kilickoltuk_atolye') || '[]');
-  document.getElementById('stat-vitrin-sayisi').textContent = atolyeList.length || 8;
+  document.getElementById('stat-vitrin-sayisi').textContent = atolyeList.length || 0;
+
+  const teslimatList = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar') || '[]');
+  const statTeslimatEl = document.getElementById('stat-teslimat-sayisi');
+  if (statTeslimatEl) statTeslimatEl.textContent = teslimatList.length || 0;
 }
 
 // ─────────────────────────────────────────
@@ -1329,6 +1535,331 @@ function urunleriYedektenYukle(input) {
 }
 
 // ─────────────────────────────────────────
+// SEKME: TESLİMAT YÖNETİMİ
+// ─────────────────────────────────────────
+// SEKME: TESLİMAT YÖNETİMİ (TÜM HATAY İLÇELERİ & ALBÜMLER)
+// ─────────────────────────────────────────
+let secilenTeslimatFotolari = []; // Çoklu base64 fotoğraflar
+
+const VARSAYILAN_TESLIMATLAR = [
+  {
+    "id": "teslimat-gulderen-toki-full",
+    "ilce": "Hatay / Gülderen TOKİ",
+    "baslik": "Oturma Odası, Yemek Odası & Yatak Odası",
+    "aciklama": "Siz de evinize şıklık ve zarafet katmak istiyorsanız, özel ölçü ve model seçenekleri için WhatsApp'tan bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-gulderen-toki-3.jpg",
+    "fotolar": [
+      "images/teslimat-gulderen-toki-3.jpg",
+      "images/teslimat-gulderen-toki-4.jpg",
+      "images/teslimat-gulderen-toki-5.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-iskenderun-full",
+    "ilce": "Hatay / İskenderun",
+    "baslik": "Lüks Salon Takımı, Yemek Odası & Yatak Odası",
+    "aciklama": "Siz de evinize şıklık ve konfor katmak istiyorsanız, özel ölçü ve kumaş seçenekleri için WhatsApp'tan bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-iskenderun-1.jpg",
+    "fotolar": [
+      "images/teslimat-iskenderun-1.jpg",
+      "images/teslimat-iskenderun-2.jpg",
+      "images/teslimat-iskenderun-3.jpg",
+      "images/teslimat-iskenderun-4.jpg",
+      "images/teslimat-iskenderun-5.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-samandag",
+    "ilce": "Hatay / Samandağ",
+    "baslik": "Özel Ölçü Salon Takımı & Zigon Sehpa",
+    "aciklama": "Siz de salonunuza şıklık katmak istiyorsanız, beğendiğiniz modeller için WhatsApp'tan hızlıca fiyat alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-samandag-1.jpg",
+    "fotolar": [
+      "images/teslimat-samandag-1.jpg",
+      "images/teslimat-samandag-2.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-kirkhan-toki",
+    "ilce": "Hatay / Kırıkhan TOKİ",
+    "baslik": "Salon Takımı, Yatak Odası & Genç Odası",
+    "aciklama": "Siz de evinize şıklık ve ferahlık katmak istiyorsanız, oda ölçülerinize özel üretim için WhatsApp'tan bize ulaşabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-kirkhan-toki-1.jpg",
+    "fotolar": [
+      "images/teslimat-kirkhan-toki-1.jpg",
+      "images/teslimat-kirkhan-toki-2.jpg",
+      "images/teslimat-kirkhan-toki-3.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-altinozu",
+    "ilce": "Hatay / Altınözü",
+    "baslik": "Fitilli Dokuma Salon Takımı & Berjerler",
+    "aciklama": "Siz de evinize modern bir şıklık katmak istiyorsanız, özel kumaş kartelası ve detaylar için WhatsApp'tan bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-altinozu-1.jpg",
+    "fotolar": [
+      "images/teslimat-altinozu-1.jpg",
+      "images/teslimat-altinozu-2.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-payas",
+    "ilce": "Hatay / Payas",
+    "baslik": "Şömineli TV Ünitesi, Salon & Oval Yemek Masası",
+    "aciklama": "Siz de yaşam alanınıza şıklık katmak istiyorsanız, özel tasarım mobilyalarımız için WhatsApp'tan detaylı bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-payas-1.jpg",
+    "fotolar": [
+      "images/teslimat-payas-1.jpg",
+      "images/teslimat-payas-2.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-dikmece-toki",
+    "ilce": "Hatay / Dikmece TOKİ",
+    "baslik": "Vizon Salon Koltuk Takımı & Boy Aynası",
+    "aciklama": "Siz de evinize konfor ve şıklık katmak istiyorsanız, özel ölçü üretimlerimiz için WhatsApp'tan hemen fiyat alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-dikmece-toki-1.jpg",
+    "fotolar": [
+      "images/teslimat-dikmece-toki-1.jpg",
+      "images/teslimat-dikmece-toki-2.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-reyhanli-kose",
+    "ilce": "Hatay / Reyhanlı",
+    "baslik": "Özel Ölçü Geniş U-Köşe Salon Takımı",
+    "aciklama": "Siz de salonunuza şıklık ve geniş oturum katmak istiyorsanız, özel ölçü köşe takımları için WhatsApp'tan bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-reyhanli-kose-1.jpg",
+    "fotolar": [
+      "images/teslimat-reyhanli-kose-1.jpg",
+      "images/teslimat-reyhanli-kose-2.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-reyhanli-salon-yatak",
+    "ilce": "Hatay / Reyhanlı",
+    "baslik": "Antrasit Salon Takımı & LED Aynalı Yatak Odası",
+    "aciklama": "Siz de evinize şıklık katmak istiyorsanız, hayalinizdeki mobilyalar için WhatsApp'tan kolayca bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-reyhanli-salon-1.jpg",
+    "fotolar": [
+      "images/teslimat-reyhanli-salon-1.jpg",
+      "images/teslimat-reyhanli-salon-2.jpg",
+      "images/teslimat-reyhanli-yatak-1.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-antakya",
+    "ilce": "Hatay / Antakya",
+    "baslik": "Şömineli TV Konsolu & Krem Salon Takımı",
+    "aciklama": "Siz de evinize şıklık katmak istiyorsanız, özel imalat koltuk takımlarımız için WhatsApp'tan detaylı bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-antakya-1.jpg",
+    "fotolar": [
+      "images/teslimat-antakya-1.jpg"
+    ]
+  },
+  {
+    "id": "teslimat-gulderen-toki-klasik",
+    "ilce": "Hatay / Gülderen TOKİ",
+    "baslik": "Özel Ölçü Salon Koltuk Takımı & Sehpa",
+    "aciklama": "Siz de evinize şıklık ve konfor katmak istiyorsanız, atölyemizden doğrudan fiyat için WhatsApp'tan bilgi alabilirsiniz.",
+    "tarih": "24.09.2026",
+    "foto": "images/teslimat-gulderen-toki-1.jpg",
+    "fotolar": [
+      "images/teslimat-gulderen-toki-1.jpg",
+      "images/teslimat-gulderen-toki-2.jpg"
+    ]
+  }
+];
+
+function teslimatlariGetir() {
+  try {
+    const list = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar') || '[]');
+    if (Array.isArray(list) && list.length > 0) return list;
+  } catch(e) {}
+  localStorage.setItem('kilickoltuk_teslimatlar', JSON.stringify(VARSAYILAN_TESLIMATLAR));
+  return VARSAYILAN_TESLIMATLAR;
+}
+
+function teslimatFotoDegisti(input) {
+  const files = Array.from(input.files || []);
+  if (!files.length) return;
+
+  const infoEl = document.getElementById('teslimat-dosya-adi-goster');
+  const box = document.getElementById('teslimat-preview-box');
+  const container = document.getElementById('teslimat-previews-container');
+  if (infoEl) infoEl.textContent = `⏳ ${files.length} fotoğraf hazırlanıyor...`;
+  if (box) box.style.display = 'block';
+  if (container) container.innerHTML = '';
+  secilenTeslimatFotolari = [];
+
+  let loaded = 0;
+  files.forEach((file, idx) => {
+    optimizeGorsel(file, base64Data => {
+      secilenTeslimatFotolari.push(base64Data);
+      if (container) {
+        const itemWrap = document.createElement('div');
+        itemWrap.style.cssText = 'width:60px; height:50px; border-radius:6px; overflow:hidden; border:1px solid #d4af37; position:relative;';
+        itemWrap.innerHTML = `<img src="${base64Data}" style="width:100%; height:100%; object-fit:cover;">`;
+        container.appendChild(itemWrap);
+      }
+      loaded++;
+      if (loaded === files.length && infoEl) {
+        infoEl.textContent = `✅ ${files.length} adet fotoğraf hazırlandı.`;
+      }
+    });
+  });
+}
+
+function teslimatFotoEkle() {
+  if (!secilenTeslimatFotolari.length) {
+    toast('⚠️ Lütfen en az bir teslimat fotoğrafı seçin!');
+    return;
+  }
+
+  const ilce = document.getElementById('teslimat-ilce').value || 'Hatay';
+  const baslik = document.getElementById('teslimat-baslik').value.trim() || `${ilce} Özel Ölçü Teslimatımız`;
+  const aciklama = document.getElementById('teslimat-aciklama').value.trim() || 'Siz de evinize şıklık ve zarafet katmak istiyorsanız, özel ölçü ve model seçenekleri için WhatsApp\'tan bilgi alabilirsiniz.';
+
+  const list = teslimatlariGetir();
+  const yeniTeslimat = {
+    id: 'teslimat-' + Date.now(),
+    ilce: ilce,
+    baslik: baslik,
+    aciklama: aciklama,
+    tarih: new Date().toLocaleDateString('tr-TR'),
+    foto: secilenTeslimatFotolari[0],
+    fotolar: [...secilenTeslimatFotolari]
+  };
+
+  list.unshift(yeniTeslimat);
+  localStorage.setItem('kilickoltuk_teslimatlar', JSON.stringify(list));
+
+  if (isServer) {
+    fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'add_teslimat',
+        foto: yeniTeslimat.foto,
+        fotolar: yeniTeslimat.fotolar,
+        ilce: ilce,
+        baslik: baslik,
+        aciklama: aciklama
+      })
+    }).catch(()=>{});
+  }
+
+  // Firebase Firestore Senkronizasyonu
+  if (window.db) {
+    window.db.collection('site_data').doc('teslimatlar').set({ items: list }).catch(()=>{});
+  }
+
+  document.getElementById('teslimat-foto-input').value = '';
+  document.getElementById('teslimat-preview-box').style.display = 'none';
+  document.getElementById('teslimat-dosya-adi-goster').textContent = '';
+  document.getElementById('teslimat-baslik').value = '';
+  document.getElementById('teslimat-aciklama').value = '';
+  secilenTeslimatFotolari = [];
+
+  teslimatListesiGuncelle();
+  istatistikleriGuncelle();
+  toast('✅ Teslimat başarıyla eklendi ve siteye yansıdı!');
+}
+
+function teslimatListesiGuncelle() {
+  const div = document.getElementById('teslimat-listesi');
+  if (!div) return;
+  const list = teslimatlariGetir();
+
+  const statTeslimatEl = document.getElementById('stat-teslimat-sayisi');
+  if (statTeslimatEl) statTeslimatEl.textContent = list.length;
+
+  if (list.length === 0) {
+    div.innerHTML = `<div class="empty-box"><i class="fas fa-truck"></i><p>Henüz teslimat eklenmemiş. Sol taraftan ilk teslimatınızı ekleyin.</p></div>`;
+    return;
+  }
+
+  div.innerHTML = list.map((item, i) => {
+    const photos = (Array.isArray(item.fotolar) && item.fotolar.length > 0)
+      ? item.fotolar
+      : (item.foto ? [item.foto] : []);
+    const kapak = photos[0] || 'images/magaza-fabrika.jpg';
+    const count = photos.length;
+
+    let thumbsHtml = '';
+    if (count > 1) {
+      thumbsHtml = `
+        <div style="display:flex; gap:4px; padding:6px 10px; background:rgba(0,0,0,0.5); overflow-x:auto;">
+          ${photos.map(p => `
+            <div style="width:40px; height:30px; border-radius:4px; overflow:hidden; flex-shrink:0; border:1px solid rgba(255,255,255,0.2);">
+              <img src="${p}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    return `
+      <div class="product-card">
+        <div class="product-card-img-wrap" style="position:relative;">
+          <img src="${kapak}" alt="${item.baslik || 'Teslimat'}">
+          <div style="position:absolute; top:8px; left:8px; display:flex; gap:4px; z-index:2;">
+            <span style="background:rgba(0,0,0,0.8); color:var(--gold-primary); font-size:0.72rem; padding:3px 8px; border-radius:12px; font-weight:700; border:1px solid rgba(212,175,55,0.4);">
+              <i class="fas fa-map-marker-alt"></i> ${item.ilce || 'Hatay'}
+            </span>
+            ${count > 1 ? `<span style="background:rgba(212,175,55,0.9); color:#000; font-size:0.72rem; padding:3px 7px; border-radius:12px; font-weight:800;"><i class="fas fa-images"></i> ${count}</span>` : ''}
+          </div>
+          <div class="product-card-actions">
+            <button class="card-act-btn del" onclick="teslimatSil(${i})" title="Bu Teslimatı Sil">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        ${thumbsHtml}
+        <div class="product-card-body" style="padding:0.9rem;">
+          <h4 style="font-size:0.92rem; font-weight:700; margin-bottom:0.4rem; color:#fff; line-height:1.3;">${item.baslik || 'Özel Teslimat'}</h4>
+          ${item.aciklama ? `<p style="font-size:0.8rem; color:var(--text-muted); line-height:1.45; margin-bottom:0.5rem;">${item.aciklama}</p>` : ''}
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:#888; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.5rem; margin-top:auto;">
+            <span><i class="far fa-calendar-alt"></i> ${item.tarih || 'Eylül 2026'}</span>
+            <span style="color:#10b981; font-weight:600;"><i class="fas fa-check-circle"></i> Sitede Yayında</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function teslimatSil(idx) {
+  if (!confirm('Bu teslimatı siteden ve admin panelinden silmek istiyor musunuz?')) return;
+  const list = teslimatlariGetir();
+  list.splice(idx, 1);
+  localStorage.setItem('kilickoltuk_teslimatlar', JSON.stringify(list));
+  if (isServer) {
+    fetch('api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'delete_teslimat', index: idx })
+    }).catch(()=>{});
+  }
+  if (window.db) {
+    window.db.collection('site_data').doc('teslimatlar').set({ items: list }).catch(()=>{});
+  }
+  teslimatListesiGuncelle();
+  istatistikleriGuncelle();
+  toast('🗑️ Teslimat silindi.');
+}
+
+// ─────────────────────────────────────────
 // SEKME 2: ATÖLYE & VİTRİN FOTOĞRAFLARI
 // ─────────────────────────────────────────
 let secilenAtolyeFoto = null;
@@ -1374,6 +1905,10 @@ function atolyeFotoEkle() {
         comments: comments
       })
     }).catch(()=>{});
+  }
+
+  if (window.db) {
+    window.db.collection('site_data').doc('atolye').set({ items: list }).catch(()=>{});
   }
 
   document.getElementById('atolye-foto-input').value = '';
@@ -1427,11 +1962,142 @@ function atolyeSil(idx) {
       body: JSON.stringify({ action: 'delete_instagram', index: idx })
     }).catch(()=>{});
   }
+  if (window.db) {
+    window.db.collection('site_data').doc('atolye').set({ items: list }).catch(()=>{});
+  }
   atolyeListesiGuncelle();
   istatistikleriGuncelle();
   toast('🗑️ Görsel silindi.');
 }
 
+// ─────────────────────────────────────────
+// GELEN MESAJLAR YÖNETİMİ (FIRESTORE)
+// ─────────────────────────────────────────
+let cachedMesajlar = [];
+
+function mesajSayisiGuncelle() {
+  if (!window.db) return;
+  try {
+    window.db.collection('mesajlar').onSnapshot(snap => {
+      const okunmamis = snap.docs.filter(d => !d.data().okundu).length;
+      const badge = document.getElementById('nav-mesaj-badge');
+      const statEl = document.getElementById('stat-mesaj-sayisi');
+      if (statEl) statEl.textContent = snap.size;
+      if (badge) {
+        badge.textContent = okunmamis;
+        badge.style.display = okunmamis > 0 ? 'inline-block' : 'none';
+      }
+    }, err => console.warn('Mesaj snapshot hatasi:', err));
+  } catch(e) {}
+}
+
+async function mesajlariGetir() {
+  const container = document.getElementById('mesaj-listesi');
+  if (!container) return;
+  container.innerHTML = `<div class="empty-box"><i class="fas fa-spinner fa-spin"></i><p>Mesajlar yükleniyor...</p></div>`;
+
+  if (!window.db) {
+    const local = JSON.parse(localStorage.getItem('kilickoltuk_mesajlar') || '[]');
+    renderMesajlar(local.map((m, i) => ({ id: 'loc-' + i, ...m })));
+    return;
+  }
+
+  try {
+    const snap = await window.db.collection('mesajlar').orderBy('tarih', 'desc').get();
+    cachedMesajlar = [];
+    snap.forEach(doc => {
+      cachedMesajlar.push({ id: doc.id, ...doc.data() });
+    });
+    renderMesajlar(cachedMesajlar);
+  } catch(e) {
+    try {
+      const snap = await window.db.collection('mesajlar').get();
+      cachedMesajlar = [];
+      snap.forEach(doc => {
+        cachedMesajlar.push({ id: doc.id, ...doc.data() });
+      });
+      renderMesajlar(cachedMesajlar);
+    } catch(err2) {
+      const local = JSON.parse(localStorage.getItem('kilickoltuk_mesajlar') || '[]');
+      renderMesajlar(local.map((m, i) => ({ id: 'loc-' + i, ...m })));
+    }
+  }
+}
+
+function renderMesajlar(list) {
+  const container = document.getElementById('mesaj-listesi');
+  if (!container) return;
+
+  if (!list || list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-box">
+        <i class="fas fa-inbox"></i>
+        <p>Henüz siteden gönderilmiş yeni müşteri mesajı bulunmuyor.</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(m => {
+    const telRaw = (m.telefon || '').replace(/[^0-9]/g, '');
+    let waUrl = '#';
+    if (telRaw) {
+      const cleanTel = telRaw.startsWith('0') ? '9' + telRaw : (telRaw.startsWith('90') ? telRaw : '90' + telRaw);
+      waUrl = `https://wa.me/${cleanTel}?text=Merhaba%20${encodeURIComponent(m.ad || '')},%20K%C4%B1l%C4%B1%C3%A7%20Koltuk%20Mobilya'dan%20yaz%C4%B1yorum.`;
+    }
+    const tarihStr = m.tarih && m.tarih.toDate ? m.tarih.toDate().toLocaleString('tr-TR') : (m.tarih ? new Date(m.tarih).toLocaleString('tr-TR') : 'Yeni');
+
+    return `
+      <div class="mesaj-card ${m.okundu ? '' : 'yeni'}" id="card-msg-${m.id}">
+        <div class="mesaj-header">
+          <div class="mesaj-gonderen">
+            <i class="fas fa-user-circle" style="color:var(--gold-primary);"></i>
+            <span>${m.ad || 'İsimsiz Müşteri'}</span>
+            ${!m.okundu ? '<span style="background:#e11d48; color:#fff; font-size:0.68rem; font-weight:700; padding:2px 6px; border-radius:4px; text-transform:uppercase;">Yeni</span>' : ''}
+          </div>
+          <span class="mesaj-tarih"><i class="far fa-clock"></i> ${tarihStr}</span>
+        </div>
+        <div style="font-size:0.85rem; color:#cbd5e1; display:flex; gap:1.2rem; flex-wrap:wrap;">
+          <span><i class="fas fa-phone-alt" style="color:#10b981;"></i> <strong>${m.telefon || '-'}</strong></span>
+          ${m.email ? `<span><i class="fas fa-at" style="color:#38bdf8;"></i> ${m.email}</span>` : ''}
+        </div>
+        <div class="mesaj-icerik">${m.mesaj || '(Mesaj içeriği boş)'}</div>
+        <div class="mesaj-actions">
+          ${telRaw ? `<a href="${waUrl}" target="_blank" class="btn-mini m-green"><i class="fab fa-whatsapp"></i> WhatsApp'tan Yanıtla</a>` : ''}
+          ${telRaw ? `<a href="tel:${telRaw}" class="btn-mini m-blue"><i class="fas fa-phone"></i> Hemen Ara</a>` : ''}
+          ${!m.okundu ? `<button class="btn-mini" style="background:#334155; color:#fff;" onclick="mesajOkunduYap('${m.id}')"><i class="fas fa-check"></i> Okundu Yap</button>` : ''}
+          <button class="btn-mini" style="background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);" onclick="mesajSil('${m.id}')"><i class="fas fa-trash"></i> Sil</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function mesajOkunduYap(id) {
+  if (window.db && !id.startsWith('loc-')) {
+    try {
+      await window.db.collection('mesajlar').doc(id).update({ okundu: true });
+    } catch(e) {}
+  }
+  const card = document.getElementById('card-msg-' + id);
+  if (card) {
+    card.classList.remove('yeni');
+    const badge = card.querySelector('span[style*="#e11d48"]');
+    if (badge) badge.remove();
+  }
+  toast('✅ Mesaj okundu olarak işaretlendi.');
+}
+
+async function mesajSil(id) {
+  if (!confirm('Bu mesajı silmek istediğinize emin misiniz?')) return;
+  if (window.db && !id.startsWith('loc-')) {
+    try {
+      await window.db.collection('mesajlar').doc(id).delete();
+    } catch(e) {}
+  }
+  const card = document.getElementById('card-msg-' + id);
+  if (card) card.remove();
+  toast('🗑️ Mesaj silindi.');
+}
 
 // ─────────────────────────────────────────
 // TOAST BİLDİRİMİ
