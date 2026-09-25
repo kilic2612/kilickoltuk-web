@@ -105,9 +105,26 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
         const targetSection = document.querySelector(targetId);
         if (targetSection) {
             e.preventDefault();
-            const offsetTop = targetSection.offsetTop - 80;
+            let offsetTop = targetSection.offsetTop - 75;
+
+            // Koleksiyonlar vitrini tıklandığında hem başlık hem 3D kartlar ekrana tam ortalanacak şekilde kaydır
+            if (targetId === '#koleksiyon-vitrini') {
+                const stage = document.getElementById('arcStage');
+                if (stage && window.innerHeight > 650) {
+                    const rect = stage.getBoundingClientRect();
+                    const stageAbsTop = window.pageYOffset + rect.top;
+                    // Sahneyi dikeyde ekranın merkezine al
+                    const centerOffset = stageAbsTop - (window.innerHeight - stage.offsetHeight) / 2 - 20;
+                    offsetTop = Math.max(targetSection.offsetTop - 75, centerOffset);
+                } else {
+                    offsetTop = targetSection.offsetTop - 70;
+                }
+            } else if (targetId === '#teslimat-vitrini') {
+                offsetTop = targetSection.offsetTop - 75;
+            }
+
             if (window.lenis) {
-                window.lenis.scrollTo(offsetTop, { duration: 1.2 });
+                window.lenis.scrollTo(offsetTop, { duration: 1.1 });
             } else {
                 window.scrollTo({
                     top: offsetTop,
