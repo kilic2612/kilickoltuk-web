@@ -1859,6 +1859,8 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
         document.getElementById('pdm-next-btn')?.addEventListener('click', (e) => { e.stopPropagation(); setMainImg(currentIdx + 1); });
 
         setMainImg(0);
+        mainImg.style.cursor = 'zoom-in';
+        mainImg.title = 'Büyütmek için tıklayın';
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
@@ -1866,7 +1868,11 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
     function closePdmModal() {
         const modal = document.getElementById('pdm-modal');
         if (modal) modal.classList.remove('active');
-        document.body.style.overflow = '';
+        if (katSayfasi && katSayfasi.classList.contains('aktif')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
     }
 
     document.getElementById('pdm-close')?.addEventListener('click', closePdmModal);
