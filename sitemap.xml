@@ -5,8 +5,8 @@
     <!-- Ana Sayfa -->
     <url>
         <loc>https://kilickoltukmobilya.com/</loc>
-        <lastmod>2026-09-15</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2026-09-28</lastmod>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/logo.png</image:loc>
@@ -69,12 +69,12 @@
         </image:image>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/images/yemek-masasi-10.jpg</image:loc>
-            <image:title>Doğal Ceviz & Meşe Ahşap Yemek Masası Takımı - Hatay</image:title>
+            <image:title>Doğal Ceviz ve Meşe Ahşap Yemek Masası Takımı - Hatay</image:title>
             <image:caption>Açılır ahşap masa ve masif kavisli ahşap sandalye takımı</image:caption>
         </image:image>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/images/yemek-masasi-11.jpg</image:loc>
-            <image:title>Beyaz Açılır Yemek Masası & Gold Şeritli Antrasit Takım - Hatay</image:title>
+            <image:title>Beyaz Açılır Yemek Masası ve Gold Şeritli Antrasit Takım - Hatay</image:title>
             <image:caption>Beyaz açılır masa ve gold şeritli antrasit sandalye takımı</image:caption>
         </image:image>
         <image:image>
@@ -84,22 +84,22 @@
         </image:image>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/images/yemek-masasi-13.jpg</image:loc>
-            <image:title>Ceviz Açılır Ahşap Masa & Krem Bukle Sandalye Takımı - Hatay</image:title>
+            <image:title>Ceviz Açılır Ahşap Masa ve Krem Bukle Sandalye Takımı - Hatay</image:title>
             <image:caption>Açılır ceviz masa ve krem bukle kumaş ahşap sandalye takımı</image:caption>
         </image:image>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/images/yemek-masasi-14.jpg</image:loc>
-            <image:title>Doğal Ceviz Masa & Kiremit Terakota Sandalye Takımı - Hatay</image:title>
+            <image:title>Doğal Ceviz Masa ve Kiremit Terakota Sandalye Takımı - Hatay</image:title>
             <image:caption>Açılır ceviz masa ve sıcak kiremit sandalye takımı</image:caption>
         </image:image>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/images/yemek-masasi-15.jpg</image:loc>
-            <image:title>Parlak Ceviz Açılır Masa & Krem Fitilli Sandalye Takımı - Hatay</image:title>
+            <image:title>Parlak Ceviz Açılır Masa ve Krem Fitilli Sandalye Takımı - Hatay</image:title>
             <image:caption>Parlak ceviz masa ve dikey fitilli bej sandalye takımı</image:caption>
         </image:image>
         <image:image>
             <image:loc>https://kilickoltukmobilya.com/images/yemek-masasi-16.jpg</image:loc>
-            <image:title>Masif Ceviz Açılır Masa & Keten Gri Sandalye Takımı - Hatay</image:title>
+            <image:title>Masif Ceviz Açılır Masa ve Keten Gri Sandalye Takımı - Hatay</image:title>
             <image:caption>Açılır ceviz masa ve masif kavisli gri keten sandalye takımı</image:caption>
         </image:image>
         <image:image>
@@ -187,46 +187,6 @@
             <image:title>Hatay Gülderen TOKİ Salon ve Yemek Odası Teslimatı</image:title>
             <image:caption>Kılıç Koltuk Mobilya Gülderen TOKİ anahtar teslim mobilya montajı</image:caption>
         </image:image>
-    </url>
-
-    <!-- Oturma Odası Bölümü -->
-    <url>
-        <loc>https://kilickoltukmobilya.com/#oturma-odasi</loc>
-        <lastmod>2026-09-15</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-
-    <!-- Yatak Odası Bölümü -->
-    <url>
-        <loc>https://kilickoltukmobilya.com/#yatak-odasi</loc>
-        <lastmod>2026-09-15</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.9</priority>
-    </url>
-
-    <!-- Yemek Odası Bölümü -->
-    <url>
-        <loc>https://kilickoltukmobilya.com/#yemek-odasi</loc>
-        <lastmod>2026-09-15</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>
-
-    <!-- Hakkımızda Bölümü -->
-    <url>
-        <loc>https://kilickoltukmobilya.com/#hakkimizda</loc>
-        <lastmod>2026-09-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.7</priority>
-    </url>
-
-    <!-- İletişim Bölümü -->
-    <url>
-        <loc>https://kilickoltukmobilya.com/#iletisim</loc>
-        <lastmod>2026-09-15</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.8</priority>
     </url>
 
 </urlset>
