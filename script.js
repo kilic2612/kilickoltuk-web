@@ -1939,6 +1939,8 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
         }
     });
 
+    const katSayfasi = document.getElementById('kategori-sayfasi');
+    const katGeriBtn = document.getElementById('kat-geri-btn');
     const katKapatBtn = document.getElementById('kat-kapat-btn');
     const katFloatingBack = document.getElementById('kat-floating-back');
 
@@ -1955,15 +1957,16 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
         katSayfasiAc(key, title);
     });
 
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
-    prevBtn.addEventListener('click', () => showImage(current - 1));
-    nextBtn.addEventListener('click', () => showImage(current + 1));
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay) overlay.addEventListener('click', closeModal);
+    if (prevBtn) prevBtn.addEventListener('click', () => showImage(current - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => showImage(current + 1));
 
     // Klavye ile gezinme
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            if (katSayfasi && katSayfasi.classList.contains('aktif')) {
+            const katEl = document.getElementById('kategori-sayfasi');
+            if (katEl && (katEl.classList.contains('aktif') || katEl.style.display === 'block')) {
                 katSayfasiKapat(true);
                 return;
             }
