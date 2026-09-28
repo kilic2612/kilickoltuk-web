@@ -1682,56 +1682,63 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
             });
     }
 
-    const katSayfasi   = document.getElementById('kategori-sayfasi');
-    const katBaslik    = document.getElementById('kat-baslik');
-    const katGrid      = document.getElementById('kat-grid');
-    const katSayisi    = document.getElementById('kat-urun-sayisi');
-    const katGeriBtn   = document.getElementById('kat-geri-btn');
-
     function katSayfasiAc(key, title) {
+        const katSayfasi = document.getElementById('kategori-sayfasi');
+        const katBaslik = document.getElementById('kat-baslik');
+        const katGrid = document.getElementById('kat-grid');
+        const katSayisi = document.getElementById('kat-urun-sayisi');
+
+        if (!katSayfasi) return;
+
         urunleriBirlestir(adminUrunler);
         const liste = urunler[key] || [];
-        katBaslik.textContent = title;
-        katSayisi.textContent = liste.length + ' ürün';
+        if (katBaslik) katBaslik.textContent = title;
+        if (katSayisi) katSayisi.textContent = liste.length + ' ürün';
 
-        if (liste.length === 0) {
-            katGrid.innerHTML = `
-                <div class="kat-bos">
-                    <i class="fas fa-image"></i>
-                    <p>Bu kategoriye henüz ürün fotoğrafı eklenmemiş.</p>
-                </div>`;
-        } else {
-            katGrid.innerHTML = liste.map((urun, i) => {
-                const gorseller = (urun.gorseller && urun.gorseller.length > 0) ? urun.gorseller : [urun.foto];
-                const hasMultiple = gorseller.length > 1;
+        if (katGrid) {
+            if (liste.length === 0) {
+                katGrid.innerHTML = `
+                    <div class="kat-bos">
+                        <i class="fas fa-image"></i>
+                        <p>Bu kategoriye henüz ürün fotoğrafı eklenmemiş.</p>
+                    </div>`;
+            } else {
+                katGrid.innerHTML = liste.map((urun, i) => {
+                    const gorseller = (urun.gorseller && urun.gorseller.length > 0) ? urun.gorseller : [urun.foto];
+                    const hasMultiple = gorseller.length > 1;
 
-                return `
-                <div class="kat-kart" data-key="${key}" data-idx="${i}" data-img-idx="0">
-                    <div class="kat-kart-img-wrap">
-                        <span class="kat-badge-tag"><i class="fas fa-sparkles"></i> Yeni Ürün</span>
-                        <img class="kat-kart-img" src="${gorseller[0]}" alt="${urun.ad}" loading="lazy" onerror="handleImageError(this)">
-                        ${hasMultiple ? `
-                            <button class="kat-card-nav kat-card-prev" data-dir="-1" title="Önceki Fotoğraf"><i class="fas fa-chevron-left"></i></button>
-                            <button class="kat-card-nav kat-card-next" data-dir="1" title="Sonraki Fotoğraf"><i class="fas fa-chevron-right"></i></button>
-                            <div class="kat-card-dots">
-                                ${gorseller.map((_, idx) => `<span class="kat-dot ${idx===0?'active':''}"></span>`).join('')}
-                            </div>
-                        ` : ''}
-                        <div class="kat-kart-overlay-btn"><i class="fas fa-search-plus"></i> ÜRÜNÜ İNCELE</div>
-                    </div>
-                    <div class="kat-kart-bilgi">
-                        <h3 class="kat-kart-ad">${urun.ad}</h3>
-                        <p class="kat-kart-aciklama">${urun.aciklama}</p>
-                        <div class="kat-kart-footer">
-                            <span class="kat-kart-fiyat">${urun.fiyat || 'Fiyat İçin İletişime Geçin'}</span>
-                            <span class="kat-kart-link"><i class="fab fa-whatsapp"></i> Bilgi Al</span>
+                    return `
+                    <div class="kat-kart" data-key="${key}" data-idx="${i}" data-img-idx="0">
+                        <div class="kat-kart-img-wrap">
+                            <span class="kat-badge-tag"><i class="fas fa-sparkles"></i> Yeni Ürün</span>
+                            <img class="kat-kart-img" src="${gorseller[0]}" alt="${urun.ad}" loading="lazy" onerror="handleImageError(this)">
+                            ${hasMultiple ? `
+                                <button class="kat-card-nav kat-card-prev" data-dir="-1" title="Önceki Fotoğraf"><i class="fas fa-chevron-left"></i></button>
+                                <button class="kat-card-nav kat-card-next" data-dir="1" title="Sonraki Fotoğraf"><i class="fas fa-chevron-right"></i></button>
+                                <div class="kat-card-dots">
+                                    ${gorseller.map((_, idx) => `<span class="kat-dot ${idx===0?'active':''}"></span>`).join('')}
+                                </div>
+                            ` : ''}
+                            <div class="kat-kart-overlay-btn"><i class="fas fa-search-plus"></i> ÜRÜNÜ İNCELE</div>
                         </div>
-                    </div>
-                </div>`;
-            }).join('');
+                        <div class="kat-kart-bilgi">
+                            <h3 class="kat-kart-ad">${urun.ad}</h3>
+                            <p class="kat-kart-aciklama">${urun.aciklama}</p>
+                            <div class="kat-kart-footer">
+                                <span class="kat-kart-fiyat">${urun.fiyat || 'Fiyat İçin İletişime Geçin'}</span>
+                                <span class="kat-kart-link"><i class="fab fa-whatsapp"></i> Bilgi Al</span>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            }
         }
 
         katSayfasi.classList.add('aktif');
+        katSayfasi.style.display = 'block';
+        katSayfasi.style.opacity = '1';
+        katSayfasi.style.visibility = 'visible';
+        katSayfasi.style.pointerEvents = 'auto';
         document.body.style.overflow = 'hidden';
         katSayfasi.scrollTop = 0;
 
@@ -1743,8 +1750,13 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
     window.katSayfasiAc = katSayfasiAc;
 
     function katSayfasiKapat(shouldBack = false) {
+        const katSayfasi = document.getElementById('kategori-sayfasi');
         if (katSayfasi) {
             katSayfasi.classList.remove('aktif');
+            katSayfasi.style.display = 'none';
+            katSayfasi.style.opacity = '0';
+            katSayfasi.style.visibility = 'hidden';
+            katSayfasi.style.pointerEvents = 'none';
         }
         document.body.style.overflow = '';
         if (shouldBack && window.history.state && window.history.state.modal === 'kategori') {
@@ -1755,7 +1767,8 @@ if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
 
     // Mobil veya tarayıcı geri tuşuna basıldığında koleksiyonu kapat
     window.addEventListener('popstate', (e) => {
-        if (katSayfasi && katSayfasi.classList.contains('aktif')) {
+        const katSayfasi = document.getElementById('kategori-sayfasi');
+        if (katSayfasi && (katSayfasi.classList.contains('aktif') || katSayfasi.style.display === 'block')) {
             katSayfasiKapat(false);
         }
     });
@@ -3740,16 +3753,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         cards.forEach((card, idx) => {
+            const openThisCategory = (e) => {
+                const gal = card.getAttribute('data-gallery');
+                if (gal && typeof window.openArcCategory === 'function') {
+                    if (e && e.preventDefault) e.preventDefault();
+                    if (e && e.stopPropagation) e.stopPropagation();
+                    window.openArcCategory(gal);
+                }
+            };
+
+            // Butona doğrudan tıklama ve dokunma garantisi
+            const btn = card.querySelector('.arc-card-btn');
+            if (btn) {
+                btn.addEventListener('click', (e) => {
+                    openThisCategory(e);
+                });
+                btn.addEventListener('touchend', (e) => {
+                    openThisCategory(e);
+                });
+            }
+
+            // Kartın geneline tıklama: aktif kartsa koleksiyonu aç, yan kartsa ortaya getir
             card.addEventListener('click', (e) => {
                 if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
                 if (currentIndex !== idx) {
                     e.preventDefault();
                     goTo(idx);
+                } else {
+                    openThisCategory(e);
                 }
             });
         });
 
-        // Mobil Dokunmatik Kaydırma (Touch Swipe) - Buton tıklamalarını pas geç
+        // Mobil Dokunmatik Kaydırma (Touch Swipe) - Buton veya aktif kart dokunuşlarını pas geç
         let touchStartX = 0;
         let touchEndX = 0;
         stage.addEventListener('touchstart', (e) => {

@@ -7221,17 +7221,24 @@ button {
 .arc-card-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
-    padding: 0.45rem 1.05rem;
+    padding: 0.65rem 1.25rem;
+    min-height: 42px;
     background: var(--gradient-gold);
     color: #0c0d10;
-    font-size: 0.8rem;
+    font-size: 0.88rem;
     font-weight: 700;
     border-radius: 50px;
     border: none;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 15 !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .arc-card-btn:hover {
