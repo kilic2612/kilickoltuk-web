@@ -2781,7 +2781,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             id: 'teslimat-altinozu-fitilli',
-            ilce: 'Hatay / Altınözü',
+            ilce: 'Hatay / Gülderen TOKİ',
             baslik: 'Fitilli Krem Buklet Koltuk',
             aciklama: 'Siz de evinize modern bir şıklık katmak istiyorsanız, özel kumaş kartelası ve detaylar için WhatsApp\'tan bilgi alabilirsiniz.',
             tarih: '24 Eylül 2026',
@@ -2908,8 +2908,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getDinamikTeslimatlar() {
         try {
-            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
-            if (Array.isArray(kayitli) && kayitli.length > 0) return kayitli;
+            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v5') || localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
+            if (Array.isArray(kayitli) && kayitli.length > 0) {
+                return kayitli.map(item => {
+                    if (item.id === 'teslimat-altinozu-fitilli' || (item.baslik === 'Fitilli Krem Buklet Koltuk')) {
+                        return { ...item, ilce: 'Hatay / Gülderen TOKİ' };
+                    }
+                    return item;
+                });
+            }
         } catch(e) {}
         return varsayilanTeslimat;
     }
@@ -3096,7 +3103,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.db) {
         window.db.collection('site_data').doc('teslimatlar').get().then(doc => {
             if (doc.exists && doc.data() && Array.isArray(doc.data().items) && doc.data().items.length > 0) {
-                localStorage.setItem('kilickoltuk_teslimatlar_v4', JSON.stringify(doc.data().items));
+                const fixedItems = doc.data().items.map(it => (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') ? { ...it, ilce: 'Hatay / Gülderen TOKİ' } : it);
+                localStorage.setItem('kilickoltuk_teslimatlar_v5', JSON.stringify(fixedItems));
                 if (aktifSekme === 'teslimat') renderGallery('teslimat');
             }
         }).catch(() => {});
@@ -3115,7 +3123,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(r => r.json())
             .then(res => {
                 if (res.status === 'success' && Array.isArray(res.data) && res.data.length > 0) {
-                    localStorage.setItem('kilickoltuk_teslimatlar_v4', JSON.stringify(res.data));
+                    const fixedItems = res.data.map(it => (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') ? { ...it, ilce: 'Hatay / Gülderen TOKİ' } : it);
+                    localStorage.setItem('kilickoltuk_teslimatlar_v5', JSON.stringify(fixedItems));
                     if (aktifSekme === 'teslimat') renderGallery('teslimat');
                 }
             }).catch(() => {});
