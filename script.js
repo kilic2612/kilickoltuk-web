@@ -2754,8 +2754,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Gruplandırılmış çoklu fotoğraflı teslimatlar (Kısa başlık ve slogan açıklamalar)
     const varsayilanTeslimat = [
         {
-            id: 'teslimat-gulderen-toki-nervurlu',
-            ilce: 'Hatay / Gülderen TOKİ',
+            id: 'teslimat-samandag-nervurlu',
+            ilce: 'Hatay / Samandağ',
             baslik: 'Nervürlü Koltuk Takımı',
             aciklama: 'Siz de evinize konfor ve şıklık katmak istiyorsanız, özel ölçü üretimlerimiz için WhatsApp\'tan hemen fiyat alabilirsiniz.',
             tarih: '24 Eylül 2026',
@@ -2908,11 +2908,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getDinamikTeslimatlar() {
         try {
-            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v5') || localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
+            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v6') || localStorage.getItem('kilickoltuk_teslimatlar_v5') || localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
             if (Array.isArray(kayitli) && kayitli.length > 0) {
                 return kayitli.map(item => {
-                    if (item.id === 'teslimat-altinozu-fitilli' || (item.baslik === 'Fitilli Krem Buklet Koltuk')) {
+                    if (item.id === 'teslimat-altinozu-fitilli' || item.baslik === 'Fitilli Krem Buklet Koltuk') {
                         return { ...item, ilce: 'Hatay / Gülderen TOKİ' };
+                    }
+                    if (item.id === 'teslimat-gulderen-toki-nervurlu' || item.id === 'teslimat-samandag-nervurlu' || item.baslik === 'Nervürlü Koltuk Takımı') {
+                        return { ...item, ilce: 'Hatay / Samandağ' };
                     }
                     return item;
                 });
@@ -3103,8 +3106,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.db) {
         window.db.collection('site_data').doc('teslimatlar').get().then(doc => {
             if (doc.exists && doc.data() && Array.isArray(doc.data().items) && doc.data().items.length > 0) {
-                const fixedItems = doc.data().items.map(it => (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') ? { ...it, ilce: 'Hatay / Gülderen TOKİ' } : it);
-                localStorage.setItem('kilickoltuk_teslimatlar_v5', JSON.stringify(fixedItems));
+                const fixedItems = doc.data().items.map(it => {
+                    if (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') return { ...it, ilce: 'Hatay / Gülderen TOKİ' };
+                    if (it.id === 'teslimat-gulderen-toki-nervurlu' || it.id === 'teslimat-samandag-nervurlu' || it.baslik === 'Nervürlü Koltuk Takımı') return { ...it, ilce: 'Hatay / Samandağ' };
+                    return it;
+                });
+                localStorage.setItem('kilickoltuk_teslimatlar_v6', JSON.stringify(fixedItems));
                 if (aktifSekme === 'teslimat') renderGallery('teslimat');
             }
         }).catch(() => {});
@@ -3123,8 +3130,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(r => r.json())
             .then(res => {
                 if (res.status === 'success' && Array.isArray(res.data) && res.data.length > 0) {
-                    const fixedItems = res.data.map(it => (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') ? { ...it, ilce: 'Hatay / Gülderen TOKİ' } : it);
-                    localStorage.setItem('kilickoltuk_teslimatlar_v5', JSON.stringify(fixedItems));
+                    const fixedItems = res.data.map(it => {
+                        if (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') return { ...it, ilce: 'Hatay / Gülderen TOKİ' };
+                        if (it.id === 'teslimat-gulderen-toki-nervurlu' || it.id === 'teslimat-samandag-nervurlu' || it.baslik === 'Nervürlü Koltuk Takımı') return { ...it, ilce: 'Hatay / Samandağ' };
+                        return it;
+                    });
+                    localStorage.setItem('kilickoltuk_teslimatlar_v6', JSON.stringify(fixedItems));
                     if (aktifSekme === 'teslimat') renderGallery('teslimat');
                 }
             }).catch(() => {});
