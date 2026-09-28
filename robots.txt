@@ -6,8 +6,12 @@ Disallow: /uploads/
 Disallow: /create-placeholder.html
 Disallow: /demo-gorseller.html
 
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /galeri/
+
 # Sitemap
 Sitemap: https://kilickoltukmobilya.com/sitemap.xml
-
-# Crawl-delay (isteğe bağlı)
-Crawl-delay: 5

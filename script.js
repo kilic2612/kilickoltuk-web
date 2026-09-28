@@ -630,25 +630,28 @@ console.log('%c✨ Sağ taraftaki "Renk Katalogları" butonuna tıklayarak katal
 // ============================================
 function hidePreloader() {
     const preloader = document.getElementById('preloader');
-    if (preloader && !preloader.classList.contains('hidden-state')) {
+    if (preloader) {
         preloader.classList.add('hidden-state');
         preloader.style.opacity = '0';
         preloader.style.pointerEvents = 'none';
         preloader.style.transform = 'scaleY(0)';
         setTimeout(() => {
             if (preloader.parentNode) preloader.remove();
-        }, 600);
+        }, 300);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => { setTimeout(hidePreloader, 150); });
+document.addEventListener('DOMContentLoaded', () => { setTimeout(hidePreloader, 80); });
 window.addEventListener('load', () => { hidePreloader(); });
-setTimeout(hidePreloader, 600);
+setTimeout(hidePreloader, 400);
 
 // ============================================
 // LENIS SMOOTH SCROLL ENTEGRASYONU
 // ============================================
-if (typeof Lenis !== 'undefined') {
+// Lenis Smooth Scroll sadece masaüstü fare kullanıcıları için aktiftir.
+// Mobil cihazlarda yerel 120Hz/ProMotion dokunmatik kaydırma korunur.
+const isMobileOrTouch = window.innerWidth <= 768 || ('ontouchstart' in window);
+if (typeof Lenis !== 'undefined' && !isMobileOrTouch) {
     const lenis = new Lenis({
         duration: 1.2,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -1730,8 +1733,32 @@ if (typeof Lenis !== 'undefined') {
 
         katSayfasi.classList.add('aktif');
         document.body.style.overflow = 'hidden';
+        katSayfasi.scrollTop = 0;
+
+        // Tarayıcı geçmişine durum ekle (Mobilde geri tuşuna basılınca kategoriden çıkabilmesi için)
+        try {
+            history.pushState({ modal: 'kategori', key: key }, '');
+        } catch (e) {}
     }
     window.katSayfasiAc = katSayfasiAc;
+
+    function katSayfasiKapat(shouldBack = false) {
+        if (katSayfasi) {
+            katSayfasi.classList.remove('aktif');
+        }
+        document.body.style.overflow = '';
+        if (shouldBack && window.history.state && window.history.state.modal === 'kategori') {
+            window.history.back();
+        }
+    }
+    window.katSayfasiKapat = katSayfasiKapat;
+
+    // Mobil veya tarayıcı geri tuşuna basıldığında koleksiyonu kapat
+    window.addEventListener('popstate', (e) => {
+        if (katSayfasi && katSayfasi.classList.contains('aktif')) {
+            katSayfasiKapat(false);
+        }
+    });
 
     // ============================================
     // BELLONA / İSTİKBAL TARZI LÜKS ÜRÜN DETAY MODALI MOTORU
@@ -1893,10 +1920,12 @@ if (typeof Lenis !== 'undefined') {
         }
     });
 
-    katGeriBtn.addEventListener('click', () => {
-        katSayfasi.classList.remove('aktif');
-        document.body.style.overflow = '';
-    });
+    const katKapatBtn = document.getElementById('kat-kapat-btn');
+    const katFloatingBack = document.getElementById('kat-floating-back');
+
+    if (katGeriBtn) katGeriBtn.addEventListener('click', () => katSayfasiKapat(true));
+    if (katKapatBtn) katKapatBtn.addEventListener('click', () => katSayfasiKapat(true));
+    if (katFloatingBack) katFloatingBack.addEventListener('click', () => katSayfasiKapat(true));
 
     // Cat-tile tıklaması
     document.addEventListener('click', (e) => {
@@ -1914,8 +1943,17 @@ if (typeof Lenis !== 'undefined') {
 
     // Klavye ile gezinme
     document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (katSayfasi && katSayfasi.classList.contains('aktif')) {
+                katSayfasiKapat(true);
+                return;
+            }
+            if (modal && modal.classList.contains('active')) {
+                closeModal();
+                return;
+            }
+        }
         if (!modal.classList.contains('active')) return;
-        if (e.key === 'Escape') closeModal();
         if (e.key === 'ArrowLeft') showImage(current - 1);
         if (e.key === 'ArrowRight') showImage(current + 1);
     });
@@ -3275,48 +3313,113 @@ document.addEventListener('DOMContentLoaded', () => {
 // Çift Dil Desteği (TR | EN Multi-Language System)
 // ============================================
 (function initLanguageSystem() {
+    // Dil Çeviri Veritabanı (Tüm Sayfa İçin Eksiksiz TR / EN)
     const translations = {
         tr: {
             navHome: "Ana Sayfa",
-            navLiving: "Oturma Odası",
-            navBedroom: "Yatak Odası",
-            navDining: "Yemek Odası",
+            navCollections: "Koleksiyonlar",
             navDeliveries: "Teslimatlar",
             navAbout: "Hakkımızda",
             navContact: "İletişim",
-            heroTag1: "2004'TEN BERİ • ÖZEL ÖLÇÜ İMALAT",
-            heroTitle1: "Her detayı huzur, her çizgisi konfor için tasarlandı.",
-            heroBtn1: "Koleksiyonu İncele",
-            heroTag2: "LÜKS BAZA • SİLİNEBİLİR BAŞLIK",
-            heroTitle2: "Rüyalarınıza layık, usta ellerden çıkan benzersiz dokunuş.",
-            heroBtn2: "Yatak Odasını Keşfet",
-            heroTag3: "DOĞAL AHŞAP • ÖMÜRLÜK MEKANİZMALAR",
-            heroTitle3: "Ailenizle en güzel anılara eşlik edecek lüks sofralar.",
-            heroBtn3: "Yemek Odasını İncele",
-            directionsBtn: "Canlı Yol Tarifi Al",
+            heroTag1: "2004'TEN BERİ • KİŞİYE ÖZEL İMALAT",
+            heroTitle1: "Her detayında huzur, her dokunuşunda konfor saklı.",
+            heroBtn1: "Koleksiyonu Keşfet",
+            heroTag2: "LÜKS BAZA • ÖZEL BAŞLIK TASARIMLARI",
+            heroTitle2: "Usta ellerin şekillendirdiği zarafetle huzurlu uykular.",
+            heroBtn2: "Yatak Odalarını Keşfet",
+            heroTag3: "MASİF AHŞAP • ÖMÜRLÜK MEKANİZMALAR",
+            heroTitle3: "En değerli anılarınız için seçkin yemek odası koleksiyonları.",
+            heroBtn3: "Yemek Odalarını Keşfet",
+            whyBadge: "✦ AYRICALIKLARIMIZ",
+            whyTitle: "NEDEN KILIÇ KOLTUK?",
+            whySub: "22 yıllık tecrübemiz ve doğrudan imalatçı avantajımızla eviniz için kusursuz yaşam alanları tasarlıyoruz.",
+            whyCard1Title: "Kişiye Özel Ölçü & Kumaş",
+            whyCard1Desc: "Odanızın net ölçülerine milimetrik uyum sağlayan özel üretim ve 500'den fazla leke tutmaz VIP kumaş seçeneği.",
+            whyCard2Title: "Fırınlanmış Gürgen İskelet",
+            whyCard2Desc: "Yıllara meydan okuyan fırınlanmış 1. sınıf masif gürgen ağacı iskelet ve 35 DNS HR çökmeyen sünger kalitesi.",
+            whyCard3Title: "Fabrikadan Doğrudan Satış",
+            whyCard3Desc: "Aracı ve komisyoncu olmadan, doğrudan kendi imalat atölyemizden birinci el fabrika fiyat avantajı.",
+            whyCard4Title: "Hatay İçi Ücretsiz Teslimat",
+            whyCard4Desc: "Kendi profesyonel montaj ekibimiz ve özel nakliye aracımızla Hatay genelinde kapınıza kadar ücretsiz teslimat.",
+            collectionsBadge: "✦ ÖZEL İMALAT KOLEKSİYONLAR",
+            collectionsTitle: "Evinize Değer Katan Tasarımlar",
+            collectionsSub: "En son teslimatlarımız ve özel sipariş kreasyonlarımız arasından dilediğiniz modeli seçin.",
+            storyBadge: "✦ 22 YILLIK ZANAAT & GÜVEN",
+            storyTitle: "Antakya'da 2004'ten Beri Mobilyaya Ruh Katıyoruz",
+            storyP1: "Kılıç Koltuk Mobilya olarak, çeyrek asra yaklaşan mobilya ustalığımızı modern tasarım anlayışıyla buluşturuyoruz. Seri üretimin fabrikasyon soğukluğundan uzak durarak, her parçayı usta ellerde bir sanat eseri titizliğiyle işliyoruz.",
+            storyP2: "Hatay'ın bereketli topraklarında başlayan yolculuğumuzda; dayanıklılık, estetik ve koşulsuz müşteri memnuniyetini en büyük ilkemiz bildik. Fırınlanmış masif gürgen iskeletler ve birinci sınıf döşemelik kumaşlarla nesilden nesile aktarılacak mobilyalar üretiyoruz.",
+            storyStat1: "Yıllık Tecrübe",
+            storyStat2: "Kişiye Özel Üretim",
+            storyStat3: "Memnun Müşteri",
+            deliveriesBadge: "✦ MÜŞTERİ EVLERİNDEN TESLİMATLAR",
+            deliveriesTitle: "Hatay'ın Dört Bir Yanına Ulaşan Mutluluk",
+            deliveriesSub: "Antakya, Defne, İskenderun ve tüm Hatay genelinde tamamladığımız özel teslimatlarımızdan canlı kareler.",
             viewMoreDeliveries: "Daha Fazla Teslimat Göster",
-            collapseDeliveries: "Daha Az Göster"
+            collapseDeliveries: "Daha Az Göster",
+            contactBadge: "✦ BİZE ULAŞIN",
+            contactTitle: "Atölye & Showroom'umuza Bekliyoruz",
+            contactSub: "Yeni Sanayi Sitesi'ndeki üretim atölyemizi ve mağazamızı ziyaret edip kumaşlarımızı yakından inceleyin.",
+            contactAddrLabel: "Adresimiz",
+            contactAddrVal: "Yeni Sanayi Sitesi 14. Cadde 1. İniş, Antakya / Hatay",
+            contactPhoneLabel: "Telefonlarımız",
+            contactHoursLabel: "Çalışma Saatleri",
+            contactHoursVal: "Pazartesi - Cumartesi: 09:00 - 19:00",
+            directionsBtn: "Canlı Yol Tarifi Al",
+            footerSlogan: "2004'ten beri Antakya'da özel ölçü koltuk ve mobilya imalatçınız.",
+            footerCopy: "Tüm Hakları Saklıdır. Kılıç Koltuk Mobilya."
         },
         en: {
             navHome: "Home",
-            navLiving: "Living Room",
-            navBedroom: "Bedroom",
-            navDining: "Dining Room",
+            navCollections: "Collections",
             navDeliveries: "Deliveries",
             navAbout: "About Us",
             navContact: "Contact",
             heroTag1: "SINCE 2004 • BESPOKE CRAFTSMANSHIP",
             heroTitle1: "Crafted for serenity in every detail, comfort in every contour.",
-            heroBtn1: "Explore Collection",
+            heroBtn1: "Explore Collections",
             heroTag2: "LUXURY BASES • BESPOKE HEADBOARDS",
             heroTitle2: "Unmatched elegance shaped by master craftsmen for peaceful dreams.",
             heroBtn2: "Discover Bedrooms",
             heroTag3: "SOLID WOOD • TIMELESS MECHANISMS",
             heroTitle3: "Prestigious dining collections tailored for memorable moments.",
             heroBtn3: "Discover Dining",
-            directionsBtn: "Get Live Directions",
+            whyBadge: "✦ OUR PRIVILEGES",
+            whyTitle: "WHY KILIÇ FURNITURE?",
+            whySub: "With 22 years of master craftsmanship and direct manufacturer pricing, we craft flawless living spaces for your home.",
+            whyCard1Title: "Custom Sizing & Fabrics",
+            whyCard1Desc: "Tailor-made dimensions engineered to fit your rooms perfectly, paired with 500+ stain-resistant VIP fabrics.",
+            whyCard2Title: "Kiln-Dried Hornbeam Frame",
+            whyCard2Desc: "Time-tested, 1st class solid hornbeam timber frames combined with 35 DNS HR sag-resistant foam quality.",
+            whyCard3Title: "Direct Factory Pricing",
+            whyCard3Desc: "No middlemen or dealer markups; get authentic manufacturer pricing straight from our production workshop.",
+            whyCard4Title: "Free Delivery in Hatay",
+            whyCard4Desc: "Complimentary doorstep delivery and white-glove assembly by our dedicated logistics team across Hatay.",
+            collectionsBadge: "✦ BESPOKE FURNITURE COLLECTIONS",
+            collectionsTitle: "Designs Elevating Your Living Space",
+            collectionsSub: "Explore our latest showroom deliveries and bespoke customer commissions.",
+            storyBadge: "✦ 22 YEARS OF ARTISANSHIP & TRUST",
+            storyTitle: "Bringing Soul to Furniture in Antakya Since 2004",
+            storyP1: "At Kılıç Koltuk Mobilya, we merge nearly a quarter century of artisanal mastery with modern design ethics. Shunning mass-produced mediocrity, every single piece is handcrafted by master artisans like a work of art.",
+            storyP2: "Starting in the historic lands of Hatay, our unyielding commitment remains durability, bespoke aesthetics, and customer joy. With solid hornbeam frames and premier fabrics, we build heirlooms meant to endure generations.",
+            storyStat1: "Years Experience",
+            storyStat2: "Bespoke Production",
+            storyStat3: "Happy Customers",
+            deliveriesBadge: "✦ DELIVERIES TO CUSTOMER HOMES",
+            deliveriesTitle: "Happiness Delivered Across All of Hatay",
+            deliveriesSub: "Real customer living spaces completed across Antakya, Defne, Iskenderun, and surrounding regions.",
             viewMoreDeliveries: "Show More Deliveries",
-            collapseDeliveries: "Show Less"
+            collapseDeliveries: "Show Less",
+            contactBadge: "✦ REACH OUT TO US",
+            contactTitle: "Visit Our Workshop & Showroom",
+            contactSub: "Visit our factory showroom in Yeni Sanayi Sitesi, touch our premium fabrics, and design your dream furniture.",
+            contactAddrLabel: "Our Address",
+            contactAddrVal: "Yeni Sanayi Sitesi 14th Street 1st Ramp, Antakya / Hatay, Turkey",
+            contactPhoneLabel: "Phone Numbers",
+            contactHoursLabel: "Working Hours",
+            contactHoursVal: "Monday - Saturday: 09:00 - 19:00",
+            directionsBtn: "Get Live Directions",
+            footerSlogan: "Your bespoke sofa and furniture manufacturer in Antakya since 2004.",
+            footerCopy: "All Rights Reserved. Kılıç Koltuk Mobilya."
         }
     };
 
@@ -3336,12 +3439,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const t = translations[lang];
 
-        // Navbar linkleri
+        // 1. Navbar Menü Linkleri
         const linkMap = {
             '#home': t.navHome,
-            '#oturma-odasi': t.navLiving,
-            '#yatak-odasi': t.navBedroom,
-            '#yemek-odasi': t.navDining,
+            '#koleksiyon-vitrini': t.navCollections,
             '#teslimat-vitrini': t.navDeliveries,
             '#hakkimizda': t.navAbout,
             '#iletisim': t.navContact
@@ -3350,11 +3451,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
             const href = link.getAttribute('href');
             if (linkMap[href]) {
-                link.textContent = linkMap[href];
+                const textSpan = link.querySelector('.nav-link-text');
+                if (textSpan) {
+                    textSpan.textContent = linkMap[href];
+                } else {
+                    link.textContent = linkMap[href];
+                }
             }
         });
 
-        // Hero slayt içerikleri
+        // 2. Hero Slaytları
         const slides = document.querySelectorAll('.hero-slide');
         if (slides[0]) {
             const tag = slides[0].querySelector('.hero-editorial-tag');
@@ -3381,11 +3487,109 @@ document.addEventListener('DOMContentLoaded', () => {
             if (btnSpan) btnSpan.textContent = t.heroBtn3;
         }
 
-        // Canlı Yol Tarifi Butonu
+        // 3. Neden Biz (Why Us) Bölümü
+        const whySec = document.getElementById('neden-biz');
+        if (whySec) {
+            const badge = whySec.querySelector('.sec-badge');
+            if (badge) badge.textContent = t.whyBadge;
+            const title = whySec.querySelector('.sec-title');
+            if (title) title.textContent = t.whyTitle;
+            const sub = whySec.querySelector('.sec-sub');
+            if (sub) sub.textContent = t.whySub;
+
+            const cards = whySec.querySelectorAll('.neden-card-vip');
+            if (cards[0]) {
+                const cT = cards[0].querySelector('.neden-card-title');
+                const cD = cards[0].querySelector('.neden-card-desc');
+                if (cT) cT.textContent = t.whyCard1Title;
+                if (cD) cD.textContent = t.whyCard1Desc;
+            }
+            if (cards[1]) {
+                const cT = cards[1].querySelector('.neden-card-title');
+                const cD = cards[1].querySelector('.neden-card-desc');
+                if (cT) cT.textContent = t.whyCard2Title;
+                if (cD) cD.textContent = t.whyCard2Desc;
+            }
+            if (cards[2]) {
+                const cT = cards[2].querySelector('.neden-card-title');
+                const cD = cards[2].querySelector('.neden-card-desc');
+                if (cT) cT.textContent = t.whyCard3Title;
+                if (cD) cD.textContent = t.whyCard3Desc;
+            }
+            if (cards[3]) {
+                const cT = cards[3].querySelector('.neden-card-title');
+                const cD = cards[3].querySelector('.neden-card-desc');
+                if (cT) cT.textContent = t.whyCard4Title;
+                if (cD) cD.textContent = t.whyCard4Desc;
+            }
+        }
+
+        // 4. Koleksiyonlar Başlığı
+        const colSec = document.getElementById('koleksiyon-vitrini');
+        if (colSec) {
+            const badge = colSec.querySelector('.sec-badge');
+            if (badge) badge.textContent = t.collectionsBadge;
+            const title = colSec.querySelector('.sec-title');
+            if (title) title.textContent = t.collectionsTitle;
+            const sub = colSec.querySelector('.sec-sub');
+            if (sub) sub.textContent = t.collectionsSub;
+        }
+
+        // 5. Marka Hikayesi (Hakkımızda)
+        const storySec = document.getElementById('hakkimizda');
+        if (storySec) {
+            const badge = storySec.querySelector('.sec-badge, .about-eyebrow');
+            if (badge) badge.textContent = t.storyBadge;
+            const title = storySec.querySelector('.sec-title, .about-title');
+            if (title) title.textContent = t.storyTitle;
+            const pTags = storySec.querySelectorAll('.about-desc, .story-text p');
+            if (pTags[0]) pTags[0].textContent = t.storyP1;
+            if (pTags[1]) pTags[1].textContent = t.storyP2;
+
+            const statLabels = storySec.querySelectorAll('.stat-label, .about-stat-label');
+            if (statLabels[0]) statLabels[0].textContent = t.storyStat1;
+            if (statLabels[1]) statLabels[1].textContent = t.storyStat2;
+            if (statLabels[2]) statLabels[2].textContent = t.storyStat3;
+        }
+
+        // 6. Teslimatlar Bölümü
+        const delSec = document.getElementById('teslimat-vitrini');
+        if (delSec) {
+            const badge = delSec.querySelector('.sec-badge');
+            if (badge) badge.textContent = t.deliveriesBadge;
+            const title = delSec.querySelector('.sec-title');
+            if (title) title.textContent = t.deliveriesTitle;
+            const sub = delSec.querySelector('.sec-sub');
+            if (sub) sub.textContent = t.deliveriesSub;
+            const moreBtn = document.getElementById('daha-fazla-btn');
+            if (moreBtn) {
+                const isExpanded = moreBtn.getAttribute('data-expanded') === 'true';
+                moreBtn.textContent = isExpanded ? t.collapseDeliveries : t.viewMoreDeliveries;
+            }
+        }
+
+        // 7. İletişim Bölümü
+        const contactSec = document.getElementById('iletisim');
+        if (contactSec) {
+            const badge = contactSec.querySelector('.sec-badge');
+            if (badge) badge.textContent = t.contactBadge;
+            const title = contactSec.querySelector('.sec-title');
+            if (title) title.textContent = t.contactTitle;
+            const sub = contactSec.querySelector('.sec-sub');
+            if (sub) sub.textContent = t.contactSub;
+        }
+
+        // 8. Canlı Yol Tarifi Butonu
         const mapsBtnSpan = document.querySelector('.live-maps-btn span');
         if (mapsBtnSpan) {
             mapsBtnSpan.textContent = t.directionsBtn;
         }
+
+        // 9. Footer Telif & Slogan
+        const footerTagline = document.querySelector('.footer-tagline');
+        if (footerTagline) footerTagline.textContent = t.footerSlogan;
+        const footerBottomP = document.querySelector('.footer-bottom p');
+        if (footerBottomP) footerBottomP.textContent = `© ${new Date().getFullYear()} ${t.footerCopy}`;
     }
 
     // Event listener tanımla
@@ -3426,12 +3630,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateArc() {
             const isMobile = window.innerWidth <= 768;
-            const xStep1 = isMobile ? 150 : 250;
-            const xStep2 = isMobile ? 260 : 420;
-            const zStep1 = isMobile ? -50 : -60;
-            const zStep2 = isMobile ? -130 : -160;
-            const rotStep1 = isMobile ? 18 : 25;
-            const rotStep2 = isMobile ? 28 : 36;
+            const xStep1 = isMobile ? Math.min(120, Math.floor(window.innerWidth * 0.28)) : 250;
+            const xStep2 = isMobile ? Math.min(220, Math.floor(window.innerWidth * 0.52)) : 420;
+            const zStep1 = isMobile ? -40 : -60;
+            const zStep2 = isMobile ? -100 : -160;
+            const rotStep1 = isMobile ? 15 : 25;
+            const rotStep2 = isMobile ? 24 : 36;
 
             cards.forEach((card, idx) => {
                 let diff = idx - currentIndex;
@@ -3440,38 +3644,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (diff < -totalCards / 2) diff += totalCards;
 
                 card.classList.remove('active-card');
+
+                // Mobilde uzaktaki kartları gizle (ekran taşmasını 100% önler)
+                if (isMobile && Math.abs(diff) >= 2) {
+                    card.style.display = 'none';
+                    card.style.opacity = '0';
+                    card.style.pointerEvents = 'none';
+                    return;
+                }
+
                 card.style.display = 'block';
 
                 if (diff === 0) {
                     // Merkez Aktif Kart
                     card.classList.add('active-card');
-                    card.style.transform = `translateX(0px) translateZ(85px) rotateY(0deg) scale(1.06)`;
+                    card.style.transform = `translateX(0px) translateZ(70px) rotateY(0deg) scale(${isMobile ? 1.02 : 1.06})`;
                     card.style.zIndex = '10';
                     card.style.opacity = '1';
                     card.style.filter = 'none';
                     card.style.pointerEvents = 'auto';
                 } else if (diff === 1) {
                     // Sağ 1
-                    card.style.transform = `translateX(${xStep1}px) translateZ(${zStep1}px) rotateY(-${rotStep1}deg) scale(0.89)`;
+                    card.style.transform = `translateX(${xStep1}px) translateZ(${zStep1}px) rotateY(-${rotStep1}deg) scale(0.88)`;
                     card.style.zIndex = '6';
-                    card.style.opacity = '0.75';
+                    card.style.opacity = '0.72';
                     card.style.filter = 'brightness(0.72) blur(0.4px)';
                     card.style.pointerEvents = 'auto';
                 } else if (diff === -1) {
                     // Sol 1
-                    card.style.transform = `translateX(-${xStep1}px) translateZ(${zStep1}px) rotateY(${rotStep1}deg) scale(0.89)`;
+                    card.style.transform = `translateX(-${xStep1}px) translateZ(${zStep1}px) rotateY(${rotStep1}deg) scale(0.88)`;
                     card.style.zIndex = '6';
-                    card.style.opacity = '0.75';
+                    card.style.opacity = '0.72';
                     card.style.filter = 'brightness(0.72) blur(0.4px)';
                     card.style.pointerEvents = 'auto';
-                } else if (diff === 2) {
+                } else if (diff === 2 && !isMobile) {
                     // Sağ 2
                     card.style.transform = `translateX(${xStep2}px) translateZ(${zStep2}px) rotateY(-${rotStep2}deg) scale(0.76)`;
                     card.style.zIndex = '3';
                     card.style.opacity = '0.4';
                     card.style.filter = 'brightness(0.5) blur(1.2px)';
                     card.style.pointerEvents = 'auto';
-                } else if (diff === -2) {
+                } else if (diff === -2 && !isMobile) {
                     // Sol 2
                     card.style.transform = `translateX(-${xStep2}px) translateZ(${zStep2}px) rotateY(${rotStep2}deg) scale(0.76)`;
                     card.style.zIndex = '3';
@@ -3480,6 +3693,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     card.style.pointerEvents = 'auto';
                 } else {
                     // Gizli kartlar
+                    card.style.display = 'none';
                     card.style.transform = `translateX(0px) translateZ(-250px) scale(0.5)`;
                     card.style.zIndex = '1';
                     card.style.opacity = '0';
