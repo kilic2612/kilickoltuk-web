@@ -2986,15 +2986,17 @@ button {
     z-index: 10000005;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    transform: translateX(100%);
+    opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0.35s;
+    transform: scale(0.98);
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
 }
 .kategori-sayfasi.aktif {
-    transform: translateX(0);
+    opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    transform: scale(1);
 }
 
 /* Üst başlık çubuğu */

@@ -3741,6 +3741,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cards.forEach((card, idx) => {
             card.addEventListener('click', (e) => {
+                if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
                 if (currentIndex !== idx) {
                     e.preventDefault();
                     goTo(idx);
@@ -3748,14 +3749,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Mobil Dokunmatik Kaydırma (Touch Swipe)
+        // Mobil Dokunmatik Kaydırma (Touch Swipe) - Buton tıklamalarını pas geç
         let touchStartX = 0;
         let touchEndX = 0;
         stage.addEventListener('touchstart', (e) => {
+            if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
             touchStartX = e.touches[0].clientX;
         }, { passive: true });
 
         stage.addEventListener('touchend', (e) => {
+            if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
             touchEndX = e.changedTouches[0].clientX;
             const diffX = touchStartX - touchEndX;
             if (Math.abs(diffX) > 40) {
@@ -3769,7 +3772,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let mouseStartX = 0;
 
         stage.addEventListener('mousedown', (e) => {
-            if (e.target.closest('button')) return;
+            if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
             isMouseDown = true;
             mouseStartX = e.clientX;
         });
@@ -3790,7 +3793,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateArc();
     }
 
-    // Koleksiyonu İncele butonu köprüsü
+    // Koleksiyonu İncele butonu köprüsü - Sayfayı yana/aşağı kaydırmaz, doğrudan koleksiyonu açar
     window.openArcCategory = function(key) {
         const titles = {
             'koltuk-takimi': 'Koltuk Takımları',
@@ -3803,29 +3806,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const title = titles[key] || 'Ürün Koleksiyonu';
 
-        // Mevcut kategori overlay'ini aç
+        if (typeof window.katSayfasiAc === 'function') {
+            window.katSayfasiAc(key, title);
+            return;
+        }
+
         const overlay = document.getElementById('kategori-sayfasi');
         const baslikEl = document.getElementById('kat-baslik');
         if (overlay && baslikEl && typeof window.katSayfasiAc === 'function') {
             window.katSayfasiAc(key, title);
-        } else {
-            // İlgili kategori bölümüne yumuşak kaydır
-            const targetSectionMap = {
-                'koltuk-takimi': '#oturma-odasi',
-                'kose-takimi': '#oturma-odasi',
-                'yatak-odasi-koleksiyonu': '#yatak-odasi',
-                'cift-kisilik-yatak': '#yatak-odasi',
-                'yemek-masasi': '#yemek-odasi',
-                'tv-unitesi': '#oturma-odasi'
-            };
-            const targetEl = document.querySelector(targetSectionMap[key] || '#oturma-odasi');
-            if (targetEl) {
-                targetEl.scrollIntoView({ behavior: 'smooth' });
-                setTimeout(() => {
-                    const tile = targetEl.querySelector(`[data-gallery="${key}"]`);
-                    if (tile) tile.click();
-                }, 400);
-            }
         }
     };
 
