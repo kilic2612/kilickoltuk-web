@@ -2877,8 +2877,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         {
-            id: 'teslimat-gulderen-toki-klasik',
-            ilce: 'Hatay / Gülderen TOKİ',
+            id: 'teslimat-reyhanli-klasik',
+            ilce: 'Hatay / Reyhanlı',
             baslik: 'Özel Ölçü Salon Koltuk Takımı & Sehpa',
             aciklama: 'Siz de evinize şıklık ve konfor katmak istiyorsanız, atölyemizden doğrudan fiyat için WhatsApp\'tan bilgi alabilirsiniz.',
             tarih: '24 Eylül 2026',
@@ -2908,7 +2908,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getDinamikTeslimatlar() {
         try {
-            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v6') || localStorage.getItem('kilickoltuk_teslimatlar_v5') || localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
+            const kayitli = JSON.parse(localStorage.getItem('kilickoltuk_teslimatlar_v7') || localStorage.getItem('kilickoltuk_teslimatlar_v6') || localStorage.getItem('kilickoltuk_teslimatlar_v5') || localStorage.getItem('kilickoltuk_teslimatlar_v4') || '[]');
             if (Array.isArray(kayitli) && kayitli.length > 0) {
                 return kayitli.map(item => {
                     if (item.id === 'teslimat-altinozu-fitilli' || item.baslik === 'Fitilli Krem Buklet Koltuk') {
@@ -2916,6 +2916,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     if (item.id === 'teslimat-gulderen-toki-nervurlu' || item.id === 'teslimat-samandag-nervurlu' || item.baslik === 'Nervürlü Koltuk Takımı') {
                         return { ...item, ilce: 'Hatay / Samandağ' };
+                    }
+                    if (item.id === 'teslimat-gulderen-toki-klasik' || item.id === 'teslimat-reyhanli-klasik' || item.baslik === 'Özel Ölçü Salon Koltuk Takımı & Sehpa') {
+                        return { ...item, ilce: 'Hatay / Reyhanlı' };
                     }
                     return item;
                 });
@@ -3109,9 +3112,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fixedItems = doc.data().items.map(it => {
                     if (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') return { ...it, ilce: 'Hatay / Gülderen TOKİ' };
                     if (it.id === 'teslimat-gulderen-toki-nervurlu' || it.id === 'teslimat-samandag-nervurlu' || it.baslik === 'Nervürlü Koltuk Takımı') return { ...it, ilce: 'Hatay / Samandağ' };
+                    if (it.id === 'teslimat-gulderen-toki-klasik' || it.id === 'teslimat-reyhanli-klasik' || it.baslik === 'Özel Ölçü Salon Koltuk Takımı & Sehpa') return { ...it, ilce: 'Hatay / Reyhanlı' };
                     return it;
                 });
-                localStorage.setItem('kilickoltuk_teslimatlar_v6', JSON.stringify(fixedItems));
+                localStorage.setItem('kilickoltuk_teslimatlar_v7', JSON.stringify(fixedItems));
                 if (aktifSekme === 'teslimat') renderGallery('teslimat');
             }
         }).catch(() => {});
@@ -3133,9 +3137,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const fixedItems = res.data.map(it => {
                         if (it.id === 'teslimat-altinozu-fitilli' || it.baslik === 'Fitilli Krem Buklet Koltuk') return { ...it, ilce: 'Hatay / Gülderen TOKİ' };
                         if (it.id === 'teslimat-gulderen-toki-nervurlu' || it.id === 'teslimat-samandag-nervurlu' || it.baslik === 'Nervürlü Koltuk Takımı') return { ...it, ilce: 'Hatay / Samandağ' };
+                        if (it.id === 'teslimat-gulderen-toki-klasik' || it.id === 'teslimat-reyhanli-klasik' || it.baslik === 'Özel Ölçü Salon Koltuk Takımı & Sehpa') return { ...it, ilce: 'Hatay / Reyhanlı' };
                         return it;
                     });
-                    localStorage.setItem('kilickoltuk_teslimatlar_v6', JSON.stringify(fixedItems));
+                    localStorage.setItem('kilickoltuk_teslimatlar_v7', JSON.stringify(fixedItems));
                     if (aktifSekme === 'teslimat') renderGallery('teslimat');
                 }
             }).catch(() => {});
