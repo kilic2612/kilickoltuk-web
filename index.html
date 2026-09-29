@@ -560,46 +560,6 @@
             display: none !important;
         }
 
-        /* 3D Arc Silindir Koleksiyon Kartları Mobilde */
-        .arc-stage {
-            height: 410px !important;
-            width: 100% !important;
-            max-width: 100vw !important;
-            overflow: hidden !important;
-            margin: 0.5rem 0 1rem !important;
-        }
-        .arc-cylinder-track {
-            width: 100% !important;
-            max-width: 100vw !important;
-        }
-        .arc-card {
-            width: 255px !important;
-            height: 380px !important;
-            margin-top: -190px !important;
-            margin-left: -127px !important;
-            border-radius: 18px !important;
-        }
-        .arc-card-img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            object-position: center center !important;
-            border-radius: 18px !important;
-        }
-        .arc-card-gradient {
-            background: linear-gradient(180deg, rgba(12, 13, 15, 0.06) 0%, rgba(12, 13, 15, 0.25) 40%, rgba(10, 11, 14, 0.94) 86%) !important;
-        }
-        .arc-card-content {
-            padding: 1rem 0.95rem 0.9rem !important;
-        }
-        .arc-card-title {
-            font-size: 1.25rem !important;
-        }
-        .arc-card-desc {
-            font-size: 0.78rem !important;
-            line-height: 1.35 !important;
-            margin-bottom: 0.65rem !important;
-        }
 
         /* Hakkımızda / Fabrika Mağaza Görseli Mobilde */
         .brand-story-image-wrap {
@@ -913,7 +873,7 @@
                     <div class="hero-editorial-content">
                         <span class="hero-editorial-tag">2004'TEN BERİ &bull; ÖZEL ÖLÇÜ İMALAT</span>
                         <h1 class="hero-editorial-title">Her detayı huzur, her çizgisi konfor için tasarlandı.</h1>
-                        <a href="#oturma-odasi" class="hero-editorial-btn">
+                        <a href="#koleksiyon-vitrini" class="hero-editorial-btn" onclick="event.preventDefault(); window.katSayfasiAc('koltuk-takimi', 'Koltuk Takımları');">
                             <span>Koleksiyonu İncele</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -929,7 +889,7 @@
                     <div class="hero-editorial-content">
                         <span class="hero-editorial-tag">LÜKS BAZA &bull; SİLİNEBİLİR BAŞLIK</span>
                         <h2 class="hero-editorial-title">Günün tüm yorgunluğunu unutturan, huzur dolu dokunuşlar.</h2>
-                        <a href="#yatak-odasi" class="hero-editorial-btn">
+                        <a href="#koleksiyon-vitrini" class="hero-editorial-btn" onclick="event.preventDefault(); window.katSayfasiAc('yatak-odasi-koleksiyonu', 'Yatak Odası Koleksiyonu');">
                             <span>Yatak Odasını Keşfet</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -945,7 +905,7 @@
                     <div class="hero-editorial-content">
                         <span class="hero-editorial-tag">DOĞAL AHŞAP &bull; MERMER DOKU</span>
                         <h2 class="hero-editorial-title">En keyifli sofralar ve en sıcak sohbetler için.</h2>
-                        <a href="#yemek-odasi" class="hero-editorial-btn">
+                        <a href="#koleksiyon-vitrini" class="hero-editorial-btn" onclick="event.preventDefault(); window.katSayfasiAc('yemek-masasi', 'Yemek Masaları & Sandalyeler');">
                             <span>Yemek Masalarını İncele</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -1886,7 +1846,7 @@
         <span></span><span></span><span></span>
     </button>
 
-    <script src="script.js?v=5.4"></script>
+    <script src="script.js?v=5.6"></script>
 </body>
 
 </html>

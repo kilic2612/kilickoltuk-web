@@ -7424,12 +7424,12 @@ button {
     }
     .arc-stage {
         height: 410px !important;
-        overflow: hidden !important;
+        overflow: visible !important;
         max-width: 100vw !important;
         width: 100% !important;
     }
     .arc-cylinder-track {
-        overflow: hidden !important;
+        overflow: visible !important;
         max-width: 100vw !important;
     }
     .arc-card {

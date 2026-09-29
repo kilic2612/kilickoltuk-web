@@ -3781,48 +3781,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         cards.forEach((card, idx) => {
-            const openThisCategory = (e) => {
-                const gal = card.getAttribute('data-gallery');
-                if (gal && typeof window.openArcCategory === 'function') {
-                    if (e && e.preventDefault) e.preventDefault();
-                    if (e && e.stopPropagation) e.stopPropagation();
-                    window.openArcCategory(gal);
-                }
-            };
-
-            // Butona doğrudan tıklama ve dokunma garantisi
             const btn = card.querySelector('.arc-card-btn');
             if (btn) {
                 btn.addEventListener('click', (e) => {
-                    openThisCategory(e);
-                });
-                btn.addEventListener('touchend', (e) => {
-                    openThisCategory(e);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const gal = card.getAttribute('data-gallery');
+                    if (gal && typeof window.openArcCategory === 'function') {
+                        window.openArcCategory(gal);
+                    }
                 });
             }
 
-            // Kartın geneline tıklama: aktif kartsa koleksiyonu aç, yan kartsa ortaya getir
             card.addEventListener('click', (e) => {
-                if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
                 if (currentIndex !== idx) {
                     e.preventDefault();
                     goTo(idx);
                 } else {
-                    openThisCategory(e);
+                    const gal = card.getAttribute('data-gallery');
+                    if (gal && typeof window.openArcCategory === 'function') {
+                        window.openArcCategory(gal);
+                    }
                 }
             });
         });
 
-        // Mobil Dokunmatik Kaydırma (Touch Swipe) - Buton veya aktif kart dokunuşlarını pas geç
+        // Mobil Dokunmatik Kaydırma (Touch Swipe)
         let touchStartX = 0;
         let touchEndX = 0;
         stage.addEventListener('touchstart', (e) => {
-            if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
             touchStartX = e.touches[0].clientX;
         }, { passive: true });
 
         stage.addEventListener('touchend', (e) => {
-            if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
             touchEndX = e.changedTouches[0].clientX;
             const diffX = touchStartX - touchEndX;
             if (Math.abs(diffX) > 40) {
@@ -3836,7 +3827,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let mouseStartX = 0;
 
         stage.addEventListener('mousedown', (e) => {
-            if (e.target.closest('button') || e.target.closest('.arc-card-btn')) return;
+            if (e.target.closest('button')) return;
             isMouseDown = true;
             mouseStartX = e.clientX;
         });
